@@ -5,7 +5,7 @@ import { responseHandler } from "../shared/response";
 const router = Router();
 
 router.get("/", (_, res: Response) =>
-  responseHandler(res, true, 200, "✅ Auth service is running", {
+  responseHandler(res, true, 200, "✅ Backend service is running", {
     timestamp: new Date().toISOString(),
   })
 );
