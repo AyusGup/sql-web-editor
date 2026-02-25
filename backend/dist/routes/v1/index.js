@@ -1,7 +1,10 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
-// import assignmentRoutes from "./assignment.routes";
+const assignment_routes_1 = __importDefault(require("./assignment.routes"));
 const router = (0, express_1.Router)();
-// router.use("/assignment", assignmentRoutes);
+router.use("/assignment", assignment_routes_1.default);
 exports.default = router;
