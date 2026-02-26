@@ -1,5 +1,6 @@
 import express from "express";
 import dotenv from "dotenv";
+import cookieParser from 'cookie-parser';
 import { connectMongo } from "./db/config/mongo";
 import { connectRedis } from "./db/config/redis";
 import apiHandler from "./routes";
@@ -12,12 +13,13 @@ const PORT: number = Number(process.env.PORT) || 3000;
 
 app.use(
   cors({
-    origin: "*",
+    origin: process.env.CORS_ORIGIN?.split(","),
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
   })
 );
 app.use(express.json());
+app.use(cookieParser());
 
 app.use("/", apiHandler);
 

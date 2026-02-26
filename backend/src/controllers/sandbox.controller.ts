@@ -4,25 +4,17 @@ import { executeSandboxQuery } from "../sandbox/sandbox.executor";
 import { validateQuery } from "../sandbox/query.validator";
 import { gradeResult } from "../services/grader.service";
 import Assignment from "../db/models/Assignment";
+import UserProgress from "../db/models/UserProgress";
 import { responseHandler } from "../shared/response";
 
 
 export async function executeController(req: Request, res: Response) {
   try {
-    const { userId, assignmentId, query } = req.body;
+    const { assignmentId, query } = req.body;
 
     validateQuery(query);
 
-    if (!userId || !assignmentId || !query) {
-      return responseHandler(
-        res,
-        false,
-        400,
-        "Missing fields"
-      );
-    }
-
-    // 1. Fetch assignment
+    // Fetch assignment
     const assignment = await Assignment.findById(assignmentId).lean();
     if (!assignment) {
       return responseHandler(
@@ -33,14 +25,25 @@ export async function executeController(req: Request, res: Response) {
       );
     }
 
-    // 2. Get sandbox
-    const sandbox = await getOrCreateSandbox(userId, assignmentId);
+    // Get sandbox
+    const sandbox = await getOrCreateSandbox(req.userId as string, assignmentId);
 
-    // 3. Execute query
+    // Execute query
     const rows = await executeSandboxQuery(sandbox.schema, query);
 
-    // 4. Grade result
+    // Grade result
     const grading = gradeResult(rows, assignment.expectedOutput);
+
+    await UserProgress.findOneAndUpdate(
+      { userId: req.userId, assignmentId },
+      { 
+          query, 
+          $inc: { attemptCount: 1 }, 
+          $max: { isCompleted: grading.correct },
+          lastAttempt: new Date() 
+      },
+      { upsert: true, new: true }
+    );
 
     return responseHandler(
       res,

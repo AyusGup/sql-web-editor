@@ -9,9 +9,35 @@ export const assignmentParamSchema = z.object({
   id: objectId,
 });
 
-export const executeQuerySchema = z.object({
-  userId: z.string().min(1, "UserId required"),
+export const usernameSchema = z
+  .string()
+  .regex(
+    /^[A-Za-z0-9_]+$/,
+    "Only letters, numbers, and underscores are allowed",
+  )
+  .min(3, "Username should contain at least 3 characters")
+  .max(255, "Maximum 255 characters are allowed");
 
+const passwordSchema = z
+  .string()
+  .min(8, "Password should contain at least 8 characters")
+  .max(255, "Maximum 255 characters are allowed")
+  .regex(
+    /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&]).+$/,
+    "Password must contain at least one letter, one number and one special character",
+  );
+
+export const authSchema = z.object({
+  username: usernameSchema,
+  password: passwordSchema
+});
+
+export const saveSchema = z.object({
+  assignmentId: objectId,
+  sqlQuery: z.string().min(1)
+});
+
+export const executeQuerySchema = z.object({
   assignmentId: objectId,
 
   query: z

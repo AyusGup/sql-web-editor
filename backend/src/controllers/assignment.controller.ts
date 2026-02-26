@@ -4,6 +4,8 @@ import {
   getAssignmentById,
 } from "../services/assignment.service";
 import { responseHandler } from "../shared/response";
+import UserProgress from "../db/models/UserProgress";
+import { getUserProgressById } from "../services/user.service";
 
 
 export async function listAssignments(req: Request, res: Response) {
@@ -40,12 +42,13 @@ export async function getAssignment(req: Request, res: Response) {
   try {
     const { id } = req.validatedQuery;
     const result = await getAssignmentById(id);
+    const progress = await getUserProgressById(req.userId as string, id);
     return responseHandler(
       res,
       true,
       200,
       "Fetching assignment successful",
-      result
+      { result, progress}
     );
   } catch (err: any) {
     console.error("Error while fetching assignment:", err);
@@ -64,6 +67,37 @@ export async function getAssignment(req: Request, res: Response) {
       false,
       500,
       "Error while fetching assignment"
+    );
+  }
+}
+
+export async function saveController(req: Request, res: Response){
+  try {
+    const { assignmentId, sqlQuery } = req.body;
+
+    const progress = await UserProgress.findOneAndUpdate(
+      { userId: req.userId, assignmentId },
+      { 
+        sqlQuery
+      },
+      { upsert: true, new: true }
+    );
+
+    return responseHandler(
+      res,
+      true,
+      200,
+      "Progress saved successfully",
+      progress
+    );
+  } catch (err: any) {
+    console.error("Error while saving progress:", err);
+
+    return responseHandler(
+      res,
+      false,
+      500,
+      "Error while saving progress"
     );
   }
 }

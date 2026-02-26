@@ -1,7 +1,7 @@
 import mongoose, { Schema, Document } from "mongoose";
 
 export interface IUserProgress extends Document {
-  userId: string;
+  userId: mongoose.Types.ObjectId;
   assignmentId: mongoose.Types.ObjectId;
 
   sqlQuery: string;
@@ -16,7 +16,12 @@ export interface IUserProgress extends Document {
 
 const UserProgressSchema = new Schema<IUserProgress>(
   {
-    userId: { type: String, required: true, index: true },
+    userId: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+      index: true,
+    },
     assignmentId: {
       type: Schema.Types.ObjectId,
       ref: "Assignment",

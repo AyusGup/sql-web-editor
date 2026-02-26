@@ -13,3 +13,7 @@ export interface IExpectedOutput {
   type: "table" | "single_value" | "column" | "count";
   value: any;
 }
+
+export interface JWTPayload {
+  userId: string;
+}
