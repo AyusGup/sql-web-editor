@@ -25,6 +25,8 @@ export async function listAssignments(req: Request, res: Response) {
       result
     );
   } catch (err: any) {
+    console.error("Error while fetching assignments:", err);
+
     return responseHandler(
       res,
       false,
@@ -45,6 +47,8 @@ export async function getAssignment(req: Request, res: Response) {
       result
     );
   } catch (err: any) {
+    console.error("Error while fetching assignment:", err);
+    
     if(err.message === "ASSIGNMENT_NOT_FOUND"){
       return responseHandler(
         res,

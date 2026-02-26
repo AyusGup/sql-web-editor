@@ -19,7 +19,8 @@
     "express": "^5.2.1",
     "mongoose": "^9.2.2",
     "pg": "^8.18.0",
-    "redis": "^5.11.0"
+    "redis": "^5.11.0",
+    "zod": "^4.3.6"
   },
   "devDependencies": {
     "@types/cors": "^2.8.19",

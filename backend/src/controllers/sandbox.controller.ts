@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { getOrCreateSandbox } from "../sandbox/sandbox.manager";
 import { executeSandboxQuery } from "../sandbox/sandbox.executor";
+import { validateQuery } from "../sandbox/query.validator";
 import { gradeResult } from "../services/grader.service";
 import Assignment from "../db/models/Assignment";
 import { responseHandler } from "../shared/response";
@@ -9,6 +10,8 @@ import { responseHandler } from "../shared/response";
 export async function executeController(req: Request, res: Response) {
   try {
     const { userId, assignmentId, query } = req.body;
+
+    validateQuery(query);
 
     if (!userId || !assignmentId || !query) {
       return responseHandler(
@@ -50,11 +53,21 @@ export async function executeController(req: Request, res: Response) {
       }
     );
   } catch (err: any) {
+    console.error("Error while executing query in sandbox:", err);
+
+    if (
+      err.message.includes("Forbidden") ||
+      err.message.includes("SELECT") ||
+      err.message.includes("Multiple")
+    ) {
+      return responseHandler(res, false, 400, err.message);
+    }
+
     return responseHandler(
       res,
       false,
       500,
-      "Error while fetching assignments"
+      "Error while executing query"
     );
   }
 }

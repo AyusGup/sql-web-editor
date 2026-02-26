@@ -1,8 +1,8 @@
 import { getRedis } from "../db/config/redis";
 import { pool } from "../db/config/postgres";
 import { seedSandbox } from "./sandbox.seeder";
+import { TTL } from "../shared/constants";
 
-const TTL = 1800;
 
 function getKey(userId: string, assignmentId: string) {
   return `sandbox:${userId}:${assignmentId}`;
