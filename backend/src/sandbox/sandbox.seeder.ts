@@ -11,7 +11,7 @@ export async function seedSandbox(
 
   for (const table of assignment.sampleTables) {
     const columns = table.columns
-      .map((c) => `${c.columnName} ${c.dataType}`)
+      .map((c: any) => `${c.columnName} ${c.dataType}`)
       .join(",");
 
     await client.query(

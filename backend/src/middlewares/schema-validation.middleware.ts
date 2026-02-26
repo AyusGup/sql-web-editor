@@ -1,7 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { ZodError, ZodSchema } from "zod";
 import { responseHandler } from "../shared/response";
-import { ParsedUrlQuery } from "querystring";
 
 
 export const validateBody =
@@ -31,8 +30,8 @@ export const validateQueryParams =
   (schema: ZodSchema) => (req: Request, res: Response, next: NextFunction) => {
     try {
       // Validate request query params against schema
-      const parsedSchema = schema.parse(req.query.username);
-      req.query.username = parsedSchema as ParsedUrlQuery;
+      const parsedSchema = schema.parse(req.query);
+      req.validatedQuery = parsedSchema;
       next();
     } catch (err: any) {
       if (err instanceof ZodError) {

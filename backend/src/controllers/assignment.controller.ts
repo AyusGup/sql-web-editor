@@ -38,7 +38,8 @@ export async function listAssignments(req: Request, res: Response) {
 
 export async function getAssignment(req: Request, res: Response) {
   try {
-    const result = await getAssignmentById(req.params.id as string);
+    const { id } = req.validatedQuery;
+    const result = await getAssignmentById(id);
     return responseHandler(
       res,
       true,

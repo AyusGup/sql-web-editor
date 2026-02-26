@@ -8,7 +8,7 @@ import { validateQueryParams } from "../../middlewares/schema-validation.middlew
 
 const router = Router();
 
-router.get("/", listAssignments);
-router.get("/:id", validateQueryParams(assignmentParamSchema), getAssignment);
+router.get("/", validateQueryParams(assignmentParamSchema), getAssignment);
+router.get("/list", listAssignments);
 
 export default router;

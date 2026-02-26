@@ -3,13 +3,30 @@ version: "3.8"
 services:
   backend:
     build:
-      context: .
+      context: backend
       dockerfile: Dockerfile
     container_name: sql_backend
     ports:
       - "3000:3000"
     env_file:
-      - .env
+      - backend/.env
+    depends_on:
+      mongodb:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy  
+    restart: always
+  cleanup:
+    build:
+      context: worker
+      dockerfile: Dockerfile
+    container_name: cleanup_worker
+    ports:
+      - "3001:3001"
+    env_file:
+      - worker/.env
     depends_on:
       mongodb:
         condition: service_healthy
