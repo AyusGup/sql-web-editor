@@ -19,3 +19,9 @@ export const executeQuerySchema = z.object({
     .min(1, "Query cannot be empty")
     .max(5000, "Query too large"),
 });
+
+export const sqlHintSchema = z.object({
+  problemId: objectId,
+  userQuery: z.string().min(1),
+  output: z.any().nullable(),
+});
