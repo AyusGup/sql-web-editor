@@ -42,7 +42,7 @@ export async function getAssignmentById(id: string) {
   const assignment = await Assignment.findById(id).lean();
 
   if (!assignment) {
-    throw new Error("Assignment not found");
+    throw new Error("ASSIGNMENT_NOT_FOUND");
   }
 
   return assignment;

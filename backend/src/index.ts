@@ -1,6 +1,7 @@
 import express from "express";
 import dotenv from "dotenv";
 import { connectMongo } from "./db/config/mongo";
+import { connectRedis } from "./db/config/redis";
 import apiHandler from "./routes";
 import cors from "cors";
 
@@ -24,6 +25,9 @@ async function startServer() {
   try {
     // Connect MongoDB once at startup
     await connectMongo();
+
+    // Connect Redis once at startup
+    await connectRedis()
 
     app.listen(PORT, () => {
       console.log("Server started");

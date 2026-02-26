@@ -1,12 +1,11 @@
 import { Pool } from "pg";
-import { drizzle } from "drizzle-orm/node-postgres";
 
 
 const {
   POSTGRES_HOST,
   POSTGRES_USER,
   POSTGRES_PASSWORD,
-  POSTGRES_DB,
+  POSTGRES_DB_NAME,
   POSTGRES_PORT,
   MAX_POOL_SIZE
 } = process.env;
@@ -14,7 +13,7 @@ const {
 if (
   !POSTGRES_USER ||
   !POSTGRES_PASSWORD ||
-  !POSTGRES_DB ||
+  !POSTGRES_DB_NAME ||
   !POSTGRES_HOST ||
   !POSTGRES_PORT ||
   !MAX_POOL_SIZE
@@ -28,7 +27,7 @@ const pool = new Pool({
   host: POSTGRES_HOST,
   user: POSTGRES_USER,
   password: POSTGRES_PASSWORD,
-  database: POSTGRES_DB,
+  database: POSTGRES_DB_NAME,
   port: Number(POSTGRES_PORT),
   ssl: ssl,
   max: Number(MAX_POOL_SIZE),
@@ -38,5 +37,4 @@ const pool = new Pool({
   allowExitOnIdle: true,
 });
 
-export const db = drizzle(pool);
 export { pool };

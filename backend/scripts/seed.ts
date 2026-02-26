@@ -3,7 +3,7 @@ dotenv.config();
 
 import { connectMongo } from "../src/db/config/mongo";
 import Assignment from "../src/db/models/Assignment";
-import assignments from "./seeds/assignment.json";
+import assignments from "./data/assignment.json";
 
 async function runSeed() {
   try {
