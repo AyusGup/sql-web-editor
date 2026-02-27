@@ -1,0 +1,50 @@
+@use 'variables' as *;
+@use 'mixins' as *;
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: $space-2;
+}
+
+.form-label {
+    font-size: $fs-sm;
+    font-weight: $fw-medium;
+    color: $color-muted;
+}
+
+.form-input {
+    @include focus-ring;
+    width: 100%;
+    padding: $space-3 $space-4;
+    background: $color-surface-2;
+    border: 1px solid $color-border;
+    border-radius: $radius-md;
+    color: $color-text;
+    font-size: $fs-md;
+    transition: border-color $t-fast;
+
+    &:focus {
+        border-color: $color-primary;
+    }
+
+    &::placeholder {
+        color: $color-muted;
+    }
+
+    &.is-error {
+        border-color: $color-danger;
+    }
+}
+
+.form-error {
+    font-size: $fs-xs;
+    color: $color-danger;
+    margin-top: $space-1;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: $space-4;
+}

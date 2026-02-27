@@ -1,0 +1,96 @@
+@use 'variables' as *;
+@use 'mixins' as *;
+
+.container {
+    width: 100%;
+    padding: 0 $space-3;
+
+    @include respond-to(xs) {
+        padding: 0 $space-4;
+    }
+
+    @include respond-to(sm) {
+        padding: 0 $space-6;
+    }
+
+    @include respond-to(md) {
+        padding: 0 $space-8;
+    }
+
+    @include respond-to(lg) {
+        max-width: 1440px;
+        margin: 0 auto;
+    }
+}
+
+.card {
+    @include glass;
+    border-radius: $radius-md;
+    padding: $space-4;
+    box-shadow: $shadow-sm;
+
+    @include respond-to(xs) {
+        border-radius: $radius-lg;
+        padding: $space-6;
+    }
+}
+
+.badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px $space-3;
+    border-radius: $radius-pill;
+    font-size: $fs-xs;
+    font-weight: $fw-medium;
+}
+
+.badge-easy {
+    background: rgba($diff-easy, 0.15);
+    color: $diff-easy;
+}
+
+.badge-medium {
+    background: rgba($diff-medium, 0.15);
+    color: $diff-medium;
+}
+
+.badge-hard {
+    background: rgba($diff-hard, 0.15);
+    color: $diff-hard;
+}
+
+.badge-tag {
+    background: $color-surface-2;
+    color: $color-muted;
+}
+
+.badge-success {
+    background: rgba($color-success, 0.15);
+    color: $color-success;
+}
+
+.badge-danger {
+    background: rgba($color-danger, 0.15);
+    color: $color-danger;
+}
+
+.spinner {
+    width: 24px;
+    height: 24px;
+    border: 2px solid $color-border;
+    border-top-color: $color-primary;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.divider {
+    border: none;
+    border-top: 1px solid $color-border;
+    margin: $space-4 0;
+}

@@ -1,0 +1,63 @@
+@use 'variables' as *;
+
+@mixin respond-to($bp) {
+    @if $bp ==xs {
+        @media (min-width: $bp-xs) {
+            @content;
+        }
+    }
+
+    @if $bp ==sm {
+        @media (min-width: $bp-sm) {
+            @content;
+        }
+    }
+
+    @if $bp ==md {
+        @media (min-width: $bp-md) {
+            @content;
+        }
+    }
+
+    @if $bp ==lg {
+        @media (min-width: $bp-lg) {
+            @content;
+        }
+    }
+}
+
+@mixin touch-target {
+    min-height: 44px;
+    min-width: 44px;
+}
+
+@mixin glass($opacity: 0.04) {
+    background: rgba(255, 255, 255, $opacity);
+    backdrop-filter: blur(12px);
+    border: 1px solid $color-border;
+}
+
+@mixin flex-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+@mixin flex-between {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+@mixin truncate {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+@mixin focus-ring {
+    &:focus-visible {
+        outline: 2px solid $color-primary;
+        outline-offset: 2px;
+    }
+}

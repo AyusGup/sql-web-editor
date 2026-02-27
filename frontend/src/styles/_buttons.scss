@@ -1,0 +1,68 @@
+@use 'variables' as *;
+@use 'mixins' as *;
+
+.btn {
+    @include touch-target;
+    @include focus-ring;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: $space-2;
+    padding: 0 $space-6;
+    border-radius: $radius-md;
+    font-size: $fs-sm;
+    font-weight: $fw-medium;
+    transition: background $t-fast, opacity $t-fast, transform $t-fast;
+
+    &:active {
+        transform: scale(0.97);
+    }
+
+    &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+}
+
+.btn-primary {
+    background: $color-primary;
+    color: #fff;
+
+    &:hover:not(:disabled) {
+        background: lighten(#6C63FF, 5%);
+    }
+}
+
+.btn-ghost {
+    background: transparent;
+    color: $color-text;
+    border: 1px solid $color-border;
+
+    &:hover:not(:disabled) {
+        background: $color-surface-2;
+    }
+}
+
+.btn-danger {
+    background: $color-danger;
+    color: #fff;
+
+    &:hover:not(:disabled) {
+        background: lighten(#EF4444, 5%);
+    }
+}
+
+.btn-success {
+    background: $color-success;
+    color: #fff;
+
+    &:hover:not(:disabled) {
+        background: lighten(#22C55E, 5%);
+    }
+}
+
+.btn-sm {
+    padding: 0 $space-4;
+    font-size: $fs-xs;
+    min-height: 36px;
+}
