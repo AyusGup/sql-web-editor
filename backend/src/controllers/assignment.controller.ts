@@ -16,7 +16,7 @@ export async function listAssignments(req: Request, res: Response) {
       page: Number(page) || 1,
       limit: Number(limit) || 10,
       difficulty: difficulty as string,
-      tags: tags ? (tags as string).split(",") : undefined,
+      tags: tags ? (Array.isArray(tags) ? (tags as string[]) : (tags as string).split(",")) : undefined,
     });
 
     return responseHandler(
