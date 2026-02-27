@@ -1,0 +1,82 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.hint-panel {
+    border-top: 1px solid $color-border;
+    background: $color-surface;
+}
+
+.hint-bar {
+    @include flex-between;
+    padding: $space-3 $space-4;
+}
+
+.hint-label {
+    font-size: $fs-sm;
+    font-weight: $fw-medium;
+    color: $color-text;
+}
+
+.hint-actions {
+    display: flex;
+    align-items: center;
+    gap: $space-2;
+}
+
+.hint-content {
+    padding: 0 $space-4 $space-4;
+    border-top: 1px solid $color-border;
+    animation: fadeIn $t-normal;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-4px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.hint-loading {
+    @include flex-center;
+    gap: $space-3;
+    padding: $space-4;
+    color: $color-muted;
+    font-size: $fs-sm;
+}
+
+.hint-error {
+    color: $color-danger;
+    font-size: $fs-sm;
+    padding: $space-3;
+    background: rgba($color-danger, 0.08);
+    border-radius: $radius-md;
+    margin-top: $space-3;
+}
+
+.hint-body {
+    margin-top: $space-3;
+    padding: $space-4;
+    background: $color-primary-dim;
+    border: 1px solid rgba($color-primary, 0.25);
+    border-radius: $radius-md;
+    font-size: $fs-sm;
+    line-height: 1.7;
+
+    p {
+        margin-bottom: $space-2;
+    }
+
+    code {
+        font-family: $font-mono;
+        font-size: $fs-xs;
+    }
+
+    strong {
+        font-weight: $fw-bold;
+    }
+}

@@ -1,0 +1,58 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.monaco-panel {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    overflow: hidden;
+}
+
+.monaco-toolbar {
+    display: flex;
+    flex: 0;
+    align-items: center;
+    justify-content: space-between;
+    padding: $space-3 $space-4;
+    background: $color-surface;
+    border-bottom: 1px solid $color-border;
+}
+
+.monaco-label {
+    font-size: $fs-sm;
+    font-weight: $fw-medium;
+    color: $color-muted;
+}
+
+.monaco-actions {
+    display: flex;
+    align-items: center;
+    gap: $space-3;
+}
+
+.monaco-save-status {
+    font-size: $fs-xs;
+    font-family: $font-mono;
+    transition: color $t-normal;
+
+    &.is-saved {
+        color: $color-success;
+    }
+
+    &.is-saving {
+        color: $color-warning;
+    }
+
+    &.is-error {
+        color: $color-danger;
+    }
+
+    &.is-idle {
+        color: transparent;
+    }
+}
+
+.monaco-editor-wrap {
+    flex: 1;
+    min-height: 0;
+}

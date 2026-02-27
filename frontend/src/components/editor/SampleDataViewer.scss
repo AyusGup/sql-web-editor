@@ -1,0 +1,82 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.sample-viewer {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+}
+
+.sample-viewer-header {
+    @include flex-between;
+    flex-wrap: wrap;
+    gap: $space-2;
+    padding: $space-3 $space-4;
+    background: $color-surface;
+    border-bottom: 1px solid $color-border;
+}
+
+.sample-viewer-tables,
+.sample-viewer-tabs {
+    display: flex;
+    gap: $space-1;
+}
+
+.sample-table-btn,
+.sample-tab {
+    @include focus-ring;
+    padding: $space-1 $space-3;
+    border-radius: $radius-sm;
+    font-size: $fs-xs;
+    font-weight: $fw-medium;
+    color: $color-muted;
+    transition: all $t-fast;
+
+    &:hover {
+        color: $color-text;
+    }
+
+    &.is-active {
+        background: $color-primary-dim;
+        color: $color-primary;
+    }
+}
+
+.sample-viewer-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: $space-3;
+}
+
+.sample-table-wrap {
+    overflow-x: auto;
+}
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: $fs-xs;
+    font-family: $font-mono;
+
+    th {
+        text-align: left;
+        padding: $space-2 $space-3;
+        background: $color-surface-2;
+        color: $color-muted;
+        font-weight: $fw-medium;
+        white-space: nowrap;
+        border-bottom: 1px solid $color-border;
+    }
+
+    td {
+        padding: $space-2 $space-3;
+        color: $color-text;
+        border-bottom: 1px solid rgba($color-border, 0.5);
+        white-space: nowrap;
+    }
+
+    tr:hover td {
+        background: rgba($color-primary, 0.04);
+    }
+}

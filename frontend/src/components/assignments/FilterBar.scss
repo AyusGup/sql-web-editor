@@ -1,0 +1,32 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $space-2;
+}
+
+.filter-pill {
+    @include touch-target;
+    @include focus-ring;
+    padding: 0 $space-4;
+    border-radius: $radius-pill;
+    font-size: $fs-sm;
+    font-weight: $fw-medium;
+    color: $color-muted;
+    background: $color-surface;
+    border: 1px solid $color-border;
+    transition: all $t-fast;
+
+    &:hover:not(.filter-pill-active) {
+        color: $color-text;
+        border-color: $color-primary;
+    }
+
+    &.filter-pill-active {
+        background: $color-primary-dim;
+        color: $color-primary;
+        border-color: $color-primary;
+    }
+}

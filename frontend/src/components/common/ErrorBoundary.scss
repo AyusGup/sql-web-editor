@@ -1,0 +1,29 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.error-boundary {
+    @include flex-center;
+    min-height: 100vh;
+    background: $color-bg;
+}
+
+.error-inner {
+    @include flex-center;
+    flex-direction: column;
+    gap: $space-4;
+    text-align: center;
+    padding: $space-8;
+}
+
+.error-icon {
+    font-size: 3rem;
+    color: $color-warning;
+}
+
+.error-boundary h2 {
+    color: $color-text;
+}
+
+.error-boundary p {
+    color: $color-muted;
+}

@@ -1,0 +1,124 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.results-panel {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.results-header {
+    display: flex;
+    background: $color-surface;
+    border-bottom: 1px solid $color-border;
+    padding: 0 $space-4;
+    gap: $space-4;
+    flex-shrink: 0;
+}
+
+.results-tab {
+    @include focus-ring;
+    padding: $space-3 0;
+    font-size: $fs-sm;
+    font-weight: $fw-medium;
+    color: $color-muted;
+    background: transparent;
+    border-bottom: 2px solid transparent;
+    border-radius: 0;
+    transition: all $t-fast;
+
+    &:hover {
+        color: $color-text;
+    }
+
+    &.is-active {
+        color: $color-primary;
+        border-color: $color-primary;
+    }
+}
+
+.results-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+
+    &.is-center {
+        @include flex-center;
+        flex-direction: column;
+        gap: $space-3;
+        color: $color-muted;
+
+        span {
+            font-size: 2rem;
+        }
+
+        p {
+            font-size: $fs-sm;
+        }
+    }
+
+    &.is-empty {
+        opacity: 0.6;
+    }
+}
+
+.results-grading {
+    display: flex;
+    align-items: center;
+    gap: $space-3;
+    padding: $space-4;
+    border-bottom: 1px solid $color-border;
+    flex-shrink: 0;
+
+    span {
+        font-size: $fs-xl;
+    }
+
+    p {
+        font-size: $fs-sm;
+        font-weight: $fw-medium;
+    }
+
+    &.is-correct {
+        background: rgba($color-success, 0.08);
+    }
+
+    &.is-wrong {
+        background: rgba($color-danger, 0.08);
+    }
+}
+
+.results-count {
+    font-size: $fs-xs;
+    color: $color-muted;
+    padding: $space-2 $space-3;
+    border-bottom: 1px solid $color-border;
+}
+
+.results-table-wrap {
+    overflow-x: auto;
+    flex: 1;
+}
+
+.results-no-rows {
+    padding: $space-4;
+    color: $color-muted;
+    font-size: $fs-sm;
+}
+
+.results-error {
+    @include flex-center;
+    flex-direction: column;
+    gap: $space-2;
+    color: $color-danger;
+
+    span {
+        font-size: 1.5rem;
+    }
+
+    p {
+        font-size: $fs-sm;
+        text-align: center;
+    }
+}

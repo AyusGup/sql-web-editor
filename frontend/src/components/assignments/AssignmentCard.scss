@@ -1,0 +1,56 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.a-card {
+    @include glass(0.05);
+    border-radius: $radius-lg;
+    padding: $space-6;
+    cursor: pointer;
+    transition: transform $t-normal, box-shadow $t-normal, border-color $t-normal;
+    display: flex;
+    flex-direction: column;
+    gap: $space-3;
+
+    &:hover {
+        transform: translateY(-3px);
+        box-shadow: $shadow-glow;
+        border-color: $color-primary;
+    }
+}
+
+.a-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.a-card-title {
+    font-size: $fs-lg;
+    font-weight: $fw-medium;
+    color: $color-text;
+    line-height: 1.3;
+    flex: 1;
+}
+
+.a-card-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $space-1;
+}
+
+.a-card-footer {
+    margin-top: auto;
+    padding-top: $space-3;
+    border-top: 1px solid $color-border;
+}
+
+.a-card-cta {
+    font-size: $fs-sm;
+    color: $color-primary;
+    font-weight: $fw-medium;
+    transition: opacity $t-fast;
+
+    .a-card:hover & {
+        opacity: 0.8;
+    }
+}

@@ -1,3 +1,4 @@
+@use 'sass:color';
 @use 'variables' as *;
 @use 'mixins' as *;
 
@@ -29,7 +30,7 @@
     color: #fff;
 
     &:hover:not(:disabled) {
-        background: lighten(#6C63FF, 5%);
+        background: color.adjust(#6C63FF, $lightness: 5%);
     }
 }
 
@@ -48,7 +49,7 @@
     color: #fff;
 
     &:hover:not(:disabled) {
-        background: lighten(#EF4444, 5%);
+        background: color.adjust(#EF4444, $lightness: 5%);
     }
 }
 
@@ -57,7 +58,7 @@
     color: #fff;
 
     &:hover:not(:disabled) {
-        background: lighten(#22C55E, 5%);
+        background: color.adjust(#22C55E, $lightness: 5%);
     }
 }
 
