@@ -1,6 +1,5 @@
 import Assignment from "../db/models/Assignment";
 import { GoogleGenerativeAI } from "@google/generative-ai";
-import { executionInfo } from "../utils/helper";
 
 
 if(!process.env.GEMINI_API_KEY || !process.env.GEMINI_MODEL){
@@ -15,8 +14,7 @@ const geminiModel = genAI.getGenerativeModel({
 
 export async function getSQLHint(
   problemId: string,
-  userQuery: string,
-  output: any,
+  userQuery: string
 ) {
 
   // Fetch problem
@@ -25,8 +23,6 @@ export async function getSQLHint(
   if (!assignment) {
     throw new Error("ASSIGNMENT_NOT_FOUND");
   }
-
-  const execInfo = executionInfo(output);
   
   // Format schema
   const formattedSchema = assignment.sampleTables
@@ -55,9 +51,6 @@ export async function getSQLHint(
 
     User query:
     ${userQuery}
-
-    Execution:
-    ${execInfo}
 
     Expected output:
     ${JSON.stringify(assignment.expectedOutput.value)}

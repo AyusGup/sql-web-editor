@@ -5,9 +5,9 @@ import { responseHandler } from "../shared/response";
 
 export async function getSQLHintController(req: Request, res: Response) {
   try {
-    const { problemId, userQuery, output } = req.body;
+    const { problemId, userQuery } = req.body;
 
-    const hint = await getSQLHint(problemId, userQuery, output);
+    const hint = await getSQLHint(problemId, userQuery);
 
     return res.status(200).json({
       success: true,

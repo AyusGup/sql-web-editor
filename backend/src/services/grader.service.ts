@@ -10,7 +10,7 @@ export function gradeResult(userRows: any[], expected: any) {
   if (expected.type === "single_value") {
     const val = userRows[0] ? Object.values(userRows[0])[0] : null;
     return {
-      correct: val === expected.value,
+      correct: String(val) === String(expected.value),
       expected: expected.value,
       got: val,
     };
@@ -35,9 +35,18 @@ function gradeTable(userRows: any[], expectedRows: any[]) {
     };
   }
 
-  // Normalize order
+  // Normalize rows by converting all values to strings and sorting keys
+  const normalizeRow = (row: any) => {
+    if (!row || typeof row !== "object") return String(row);
+    const normalized: Record<string, string> = {};
+    Object.keys(row).sort().forEach((k) => {
+      normalized[k] = String(row[k]);
+    });
+    return normalized;
+  };
+
   const normalize = (rows: any[]) =>
-    rows.map((r) => JSON.stringify(r)).sort();
+    rows.map((r) => JSON.stringify(normalizeRow(r))).sort();
 
   const user = normalize(userRows);
   const expected = normalize(expectedRows);

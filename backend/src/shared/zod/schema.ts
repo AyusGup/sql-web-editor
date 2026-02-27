@@ -34,7 +34,7 @@ export const authSchema = z.object({
 
 export const saveSchema = z.object({
   assignmentId: objectId,
-  sqlQuery: z.string().min(1)
+  sqlQuery: z.string()
 });
 
 export const executeQuerySchema = z.object({
@@ -48,6 +48,5 @@ export const executeQuerySchema = z.object({
 
 export const sqlHintSchema = z.object({
   problemId: objectId,
-  userQuery: z.string().min(1),
-  output: z.any().nullable(),
+  userQuery: z.string()
 });

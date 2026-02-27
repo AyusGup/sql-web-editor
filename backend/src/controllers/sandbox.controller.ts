@@ -36,11 +36,10 @@ export async function executeController(req: Request, res: Response) {
 
     await UserProgress.findOneAndUpdate(
       { userId: req.userId, assignmentId },
-      { 
-          query, 
-          $inc: { attemptCount: 1 }, 
-          $max: { isCompleted: grading.correct },
-          lastAttempt: new Date() 
+      {
+        $set: { sqlQuery: query, lastAttempt: new Date() },
+        $inc: { attemptCount: 1 },
+        $max: { isCompleted: grading.correct }
       },
       { upsert: true, new: true }
     );

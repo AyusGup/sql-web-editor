@@ -39,39 +39,6 @@ export async function scheduleCleanup(
   );
 }
 
-export function executionInfo(output: any) {
-  // Query not executed
-  if (!output) {
-    return "The user has not executed the query yet.";
-  }
-
-  // Execution error (string case)
-  if (typeof output === "string") {
-    return `The query failed with error: ${output}`;
-  }
-
-  // Your grading system
-  if (output.grading?.correct) {
-    return "The query result is correct.";
-  }
-
-  const reason = output.grading?.reason ?? "Unknown issue";
-
-  const rows = output.rows ?? [];
-
-  if (rows.length === 0) {
-    return `The query ran but returned no rows. Issue: ${reason}`;
-  }
-
-  return `
-    The query executed but is incorrect.
-
-    Issue: ${reason}
-
-    Returned rows:
-    ${JSON.stringify(rows.slice(0, 5))}`;
-}
-
 export async function slidingLimiter(redis: any, key: string, limit: number, window: number) {
   const slidingWindowLua = `
   local key = KEYS[1]

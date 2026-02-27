@@ -21,7 +21,7 @@ app.use(
 app.use(express.json());
 app.use(cookieParser());
 
-app.use("/", apiHandler);
+app.use("/api", apiHandler);
 
 async function startServer() {
   try {

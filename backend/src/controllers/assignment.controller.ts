@@ -48,12 +48,12 @@ export async function getAssignment(req: Request, res: Response) {
       true,
       200,
       "Fetching assignment successful",
-      { result, progress}
+      { result, progress }
     );
   } catch (err: any) {
     console.error("Error while fetching assignment:", err);
-    
-    if(err.message === "ASSIGNMENT_NOT_FOUND"){
+
+    if (err.message === "ASSIGNMENT_NOT_FOUND") {
       return responseHandler(
         res,
         false,
@@ -61,7 +61,7 @@ export async function getAssignment(req: Request, res: Response) {
         "Assignment not found"
       );
     }
-    
+
     return responseHandler(
       res,
       false,
@@ -71,13 +71,13 @@ export async function getAssignment(req: Request, res: Response) {
   }
 }
 
-export async function saveController(req: Request, res: Response){
+export async function saveController(req: Request, res: Response) {
   try {
     const { assignmentId, sqlQuery } = req.body;
 
     const progress = await UserProgress.findOneAndUpdate(
       { userId: req.userId, assignmentId },
-      { 
+      {
         sqlQuery
       },
       { upsert: true, new: true }
