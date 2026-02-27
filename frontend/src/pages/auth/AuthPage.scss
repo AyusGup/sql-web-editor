@@ -1,0 +1,78 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.auth-page {
+    @include flex-center;
+    min-height: 100vh;
+    padding: $space-4;
+    background: $color-bg;
+}
+
+.auth-card {
+    width: 100%;
+    max-width: 420px;
+    @include glass(0.06);
+    border-radius: $radius-xl;
+    padding: $space-8;
+    box-shadow: $shadow-md;
+
+    @include respond-to(sm) {
+        padding: $space-12;
+    }
+}
+
+.auth-logo {
+    @include flex-center;
+    width: 44px;
+    height: 44px;
+    border-radius: $radius-md;
+    background: $color-primary;
+    font-size: $fs-xl;
+    font-weight: $fw-bold;
+    color: #fff;
+    margin-bottom: $space-6;
+}
+
+.auth-title {
+    font-size: $fs-2xl;
+    font-weight: $fw-bold;
+    margin-bottom: $space-2;
+}
+
+.auth-subtitle {
+    color: $color-muted;
+    font-size: $fs-sm;
+    margin-bottom: $space-8;
+}
+
+.auth-error {
+    background: rgba($color-danger, 0.1);
+    border: 1px solid rgba($color-danger, 0.3);
+    color: $color-danger;
+    padding: $space-3 $space-4;
+    border-radius: $radius-md;
+    font-size: $fs-sm;
+    margin-bottom: $space-4;
+}
+
+.auth-footer {
+    margin-top: $space-6;
+    text-align: center;
+    font-size: $fs-sm;
+    color: $color-muted;
+
+    a {
+        color: $color-primary;
+        font-weight: $fw-medium;
+        transition: opacity $t-fast;
+
+        &:hover {
+            opacity: 0.8;
+        }
+    }
+}
+
+.auth-submit {
+    width: 100%;
+    margin-top: $space-2;
+}
