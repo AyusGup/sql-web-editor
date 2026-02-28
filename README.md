@@ -126,3 +126,81 @@ The most reliable way to instantiate this project comprehensively alongside all 
     ```
 
 The application will map successfully available via `http://localhost:5173`.
+
+---
+
+## 🎥 Video Demonstration
+
+Watch the comprehensive video walkthrough demonstrating the application features, real-time query execution, and core architecture:
+
+[![Watch the Demo](https://img.youtube.com/vi/07eoEr6G7tA/hqdefault.jpg)](https://youtu.be/07eoEr6G7tA)
+
+*(Click the thumbnail to play the video on YouTube)*
+
+---
+
+## 🏗 System Architecture Diagrams
+
+Based on the core implementations, here are the exact architectural flows driving the engine.
+
+### 1. High-Level Component Architecture
+```mermaid
+graph TD
+    Client[Client Browser] <-->|REST API| Backend[Node.js Backend]
+    
+    Backend -->|Job Queueing| BullMQ[BullMQ]
+    BullMQ <--> Redis[Redis Cache / Queue]
+    
+    Backend <-->|Rate Limit & Schema Cache TTL| Redis
+    Backend <-->|User & Execution Progress| MongoDB[(MongoDB - Primary Store)]
+    
+    Backend -->|Execution via runnerPool| Postgres[(PostgreSQL - Sandbox Runner)]
+    Backend -->|Setup via adminPool| Postgres
+    
+    Worker[Cleanup Worker Node] <-->|Consume Jobs| Redis
+    Worker -->|Drop Schemas via adminPool| Postgres
+```
+
+### 2. User Action Sequence Flow
+*Note: I refined the execution pipeline from the original handwritten diagrams to explicitly capture the new `Dual-User Strategy` where restricted permissions are actively granted to the runner, and executing queries are forced securely inside `ROLLBACK` transactions to prevent database persistence.*
+
+```mermaid
+flowchart TD
+    User([User])
+    
+    User -->|Ask for Hint| Hint[Ask for Hint]
+    Hint --> TokenHint{Token Valid?}
+    TokenHint -- No --> 401Hint[/401 Unauthorized/]
+    TokenHint -- Yes --> RateLimit{Rate Limit?}
+    RateLimit -- Yes --> 429Hint[/429 Too Many Requests/]
+    RateLimit -- No --> GenHint[Generate Hint via Gemini LLM]
+    GenHint --> RetHint[/Return Hint/]
+    
+    User -->|Write Query| Write[Write Query]
+    Write --> WWReq[Web Worker Req for Autosave]
+    WWReq --> TokenSave{Token Valid?}
+    TokenSave -- No --> 401Save[/401 Unauthorized/]
+    TokenSave -- Yes --> SaveDB[Save Progress in MongoDB]
+    
+    User -->|Run Query| Run[Execute Target Query]
+    Run --> TokenRun{Token Valid?}
+    TokenRun -- No --> 401Run[/401 Unauthorized/]
+    TokenRun -- Yes --> Validation{Query Passes Regex?}
+    Validation -- No --> 400Run[/400 Bad Request/]
+    Validation -- Yes --> SchemaEx{Schema Exists in Cache?}
+    
+    SchemaEx -- Yes --> UpdTTL[Update TTL in Redis]
+    UpdTTL --> Resched[Reschedule Destruction Job]
+    Resched --> ExecQ
+    
+    SchemaEx -- No --> CreateSch[Create Schema via Admin Pool]
+    CreateSch --> GrantPriv[Grant DB Privileges to Runner Role]
+    GrantPriv --> SeedData[Seed Dummy Data in Schema]
+    SeedData --> AddMeta[Add Schema metadata to Redis Cache]
+    AddMeta --> SchedJob[Schedule Destruction Job in BullMQ]
+    SchedJob --> ExecQ
+    
+    ExecQ[Execute SQL via Runner Pool]
+    ExecQ --> Rollback((Transaction ROLLBACK))
+    Rollback --> RetRes[/Return Graded Sandbox Result/]
+```
