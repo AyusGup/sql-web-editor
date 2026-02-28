@@ -1,5 +1,5 @@
 import { getRedis } from "../db/config/redis";
-import { pool } from "../db/config/postgres";
+import { adminPool } from "../db/config/postgres";
 import { seedSandbox } from "./sandbox.seeder";
 import { TTL } from "../shared/constants";
 import { getKey, getSchema, scheduleCleanup } from "../utils/helper";
@@ -24,7 +24,7 @@ export async function getOrCreateSandbox(
   }
 
   // Cache miss
-  let client = await pool.connect();
+  let client = await adminPool.connect();
 
   try {
     const exists = await client.query(
@@ -54,11 +54,15 @@ export async function getOrCreateSandbox(
     return getOrCreateSandbox(userId, assignmentId);
   }
 
-  client = await pool.connect();
+  client = await adminPool.connect();
 
-  try{
+  try {
     await client.query(`CREATE SCHEMA ${schema}`);
     await seedSandbox(client, assignmentId, schema);
+
+    // Grant the runner user access ONLY to this specific temporary schema
+    await client.query(`GRANT USAGE ON SCHEMA ${schema} TO read_write_runner`);
+    await client.query(`GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA ${schema} TO read_write_runner`);
   } finally {
     client.release();
     await redis.del(lockKey);
@@ -75,7 +79,7 @@ export async function resetSandbox(userId: string, assignmentId: string) {
   const redis = getRedis();
   const schema = getSchema(userId, assignmentId);
 
-  const client = await pool.connect();
+  const client = await adminPool.connect();
 
   try {
     await client.query(`DROP SCHEMA IF EXISTS ${schema} CASCADE`);

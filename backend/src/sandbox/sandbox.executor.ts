@@ -1,10 +1,10 @@
-import { pool } from "../db/config/postgres";
+import { runnerPool } from "../db/config/postgres";
 
 export async function executeSandboxQuery(
   schema: string,
   query: string
 ) {
-  const client = await pool.connect();
+  const client = await runnerPool.connect();
 
   try {
     await client.query("BEGIN");

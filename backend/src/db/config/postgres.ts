@@ -7,7 +7,9 @@ const {
   POSTGRES_PASSWORD,
   POSTGRES_DB_NAME,
   POSTGRES_PORT,
-  MAX_POOL_SIZE
+  MAX_POOL_SIZE,
+  RUNNER_USER,
+  RUNNER_PASSWORD,
 } = process.env;
 
 if (
@@ -23,7 +25,7 @@ if (
 
 const ssl = process.env.NODE_ENV === "test" ? false : { rejectUnauthorized: false };
 
-const pool = new Pool({
+const adminPool = new Pool({
   host: POSTGRES_HOST,
   user: POSTGRES_USER,
   password: POSTGRES_PASSWORD,
@@ -37,4 +39,18 @@ const pool = new Pool({
   allowExitOnIdle: true,
 });
 
-export { pool };
+const runnerPool = new Pool({
+  host: POSTGRES_HOST,
+  user: RUNNER_USER,
+  password: RUNNER_PASSWORD,
+  database: POSTGRES_DB_NAME,
+  port: Number(POSTGRES_PORT),
+  ssl: ssl,
+  max: Number(MAX_POOL_SIZE),
+  min: 2,
+  idleTimeoutMillis: 30000,
+  connectionTimeoutMillis: 10000,
+  allowExitOnIdle: true,
+});
+
+export { adminPool, runnerPool };

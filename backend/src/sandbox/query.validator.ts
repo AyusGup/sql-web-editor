@@ -26,13 +26,15 @@ export function validateQuery(query: string) {
     "revoke",
     "set ",
     "reset",
+    "create", 
+    "vacuum"
   ];
 
-  const allowed = ["select", "with"];
+  const allowed = ["select", "with", "insert", "update", "delete"];
 
   const firstWord = normalized.split(/\s+/)[0];
   if (!allowed.includes(firstWord)) {
-    throw new Error("Only SELECT queries allowed");
+    throw new Error("Query must start with SELECT, WITH, INSERT, UPDATE, or DELETE");
   }
 
   for (const word of forbidden) {
