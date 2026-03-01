@@ -4,6 +4,7 @@ import {
   getAssignmentById,
 } from "./assignment.service";
 import { responseHandler } from "../../shared/response";
+import logger from "../../shared/logger";
 import UserProgress from "../../db/models/UserProgress";
 import { getUserProgressById } from "../user/user.service";
 
@@ -27,7 +28,7 @@ export async function listAssignments(req: Request, res: Response) {
       result
     );
   } catch (err: any) {
-    console.error("Error while fetching assignments:", err);
+    logger.error("Error while fetching assignments: %s", err.message);
 
     return responseHandler(
       res,
@@ -51,7 +52,7 @@ export async function getAssignment(req: Request, res: Response) {
       { result, progress }
     );
   } catch (err: any) {
-    console.error("Error while fetching assignment:", err);
+    logger.error("Error while fetching assignment: %s", err.message);
 
     if (err.message === "ASSIGNMENT_NOT_FOUND") {
       return responseHandler(
@@ -91,7 +92,7 @@ export async function saveController(req: Request, res: Response) {
       progress
     );
   } catch (err: any) {
-    console.error("Error while saving progress:", err);
+    logger.error("Error while saving progress: %s", err.message);
 
     return responseHandler(
       res,

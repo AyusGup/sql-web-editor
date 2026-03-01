@@ -5,6 +5,9 @@ import { connectMongo } from "./db/config/mongo";
 import { connectRedis } from "./db/config/redis";
 import apiHandler from "./routes";
 import cors from "cors";
+import morgan from 'morgan';
+import logger from './shared/logger';
+import bullBoardAdapter from './shared/bull-board';
 
 dotenv.config();
 
@@ -18,9 +21,17 @@ app.use(
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
   })
 );
+
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms', {
+  stream: {
+    write: (message) => logger.info(message.trim()),
+  },
+}));
+
 app.use(express.json());
 app.use(cookieParser());
 
+app.use('/admin/queues', bullBoardAdapter.getRouter());
 app.use("/api", apiHandler);
 
 async function startServer() {
@@ -29,13 +40,13 @@ async function startServer() {
     await connectMongo();
 
     // Connect Redis once at startup
-    await connectRedis()
+    await connectRedis();
 
     app.listen(PORT, () => {
-      console.log("Server started");
+      logger.info(`Server started on port ${PORT}`);
     });
   } catch (err) {
-    console.error("Startup failed:", err);
+    logger.error("Startup failed:", err);
     process.exit(1);
   }
 }

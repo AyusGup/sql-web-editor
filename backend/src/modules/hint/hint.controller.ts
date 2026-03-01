@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { getSQLHint } from "./hint.service";
 import { responseHandler } from "../../shared/response";
+import logger from "../../shared/logger";
 
 
 export async function getSQLHintController(req: Request, res: Response) {
@@ -16,7 +17,7 @@ export async function getSQLHintController(req: Request, res: Response) {
       },
     });
   } catch (error: any) {
-    console.error("SQL hint error:", error);
+    logger.error("SQL hint error: %s", error.message);
 
     if (error.message === "ASSIGNMENT_NOT_FOUND") {
       return responseHandler(

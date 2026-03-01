@@ -17,6 +17,8 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy  
+    volumes:
+      - shared_logs:/app/logs
     restart: always
   cleanup:
     build:
@@ -34,6 +36,8 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy  
+    volumes:
+      - shared_logs:/app/logs
     restart: always
   postgres:
     image: postgres:17-alpine
@@ -42,7 +46,9 @@ services:
       postgres
       -c statement_timeout=5000
       -c idle_in_transaction_session_timeout=10000
-      -c max_connections=200
+      -c max_connections=50
+      -c shared_buffers=128MB
+      -c work_mem=2MB
     ports:
       - "5432:5432"
     environment:
@@ -89,3 +95,4 @@ volumes:
   sandboxdata:
   mongodata:
   redisdata:
+  shared_logs:

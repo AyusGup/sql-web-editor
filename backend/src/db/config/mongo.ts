@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import logger from "../../shared/logger";
 
 let connectionPromise: Promise<typeof mongoose> | null = null;
 
@@ -21,21 +22,21 @@ export function connectMongo() {
 
   connectionPromise = mongoose.connect(uri, {
     dbName: MONGO_DB_NAME,
-    maxPoolSize: 10,
-    minPoolSize: 2,
+    maxPoolSize: 5,
+    minPoolSize: 1,
     serverSelectionTimeoutMS: 5000, // fail fast if DB down
   });
 
   mongoose.connection.on("connected", () => {
-    console.log("MongoDB connected");
+    logger.info("MongoDB connected");
   });
 
   mongoose.connection.on("error", (err) => {
-    console.error("MongoDB error:", err);
+    logger.error("MongoDB error: %s", err.message);
   });
 
   mongoose.connection.on("disconnected", () => {
-    console.warn("MongoDB disconnected");
+    logger.warn("MongoDB disconnected");
   });
 
   return connectionPromise;

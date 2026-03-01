@@ -7,7 +7,6 @@ const {
   POSTGRES_PASSWORD,
   POSTGRES_DB_NAME,
   POSTGRES_PORT,
-  MAX_POOL_SIZE
 } = process.env;
 
 if (
@@ -15,8 +14,7 @@ if (
   !POSTGRES_PASSWORD ||
   !POSTGRES_DB_NAME ||
   !POSTGRES_HOST ||
-  !POSTGRES_PORT ||
-  !MAX_POOL_SIZE
+  !POSTGRES_PORT
 ) {
   throw new Error("DB environment variables are undefined");
 }
@@ -30,8 +28,8 @@ const pool = new Pool({
   database: POSTGRES_DB_NAME,
   port: Number(POSTGRES_PORT),
   ssl: ssl,
-  max: Number(MAX_POOL_SIZE),
-  min: 2,
+  max: 2,
+  min: 1,
   idleTimeoutMillis: 30000,
   connectionTimeoutMillis: 10000,
   allowExitOnIdle: true,

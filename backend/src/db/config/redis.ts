@@ -1,4 +1,5 @@
 import { createClient } from "redis";
+import logger from "../../shared/logger";
 
 let redisClient: ReturnType<typeof createClient>;
 
@@ -9,11 +10,11 @@ export async function connectRedis() {
     });
 
     redisClient.on("error", (err) =>
-      console.error("Redis error:", err)
+      logger.error("Redis error: %s", err.message)
     );
 
     await redisClient.connect();
-    console.log("Redis connected");
+    logger.info("Redis connected");
   }
 
   return redisClient;

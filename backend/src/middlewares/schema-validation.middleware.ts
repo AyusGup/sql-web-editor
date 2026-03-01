@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { ZodError, ZodSchema } from "zod";
 import { responseHandler } from "../shared/response";
+import logger from "../shared/logger";
 
 
 export const validateBody =
@@ -21,7 +22,7 @@ export const validateBody =
           details: formattedErrors,
         });
       }
-      console.error("Getting error while parsing request body: ", err);
+      logger.error("Error parsing request body: %s", err.message);
       responseHandler(res, false, 400, "Internal server error");
     }
   };
@@ -44,7 +45,7 @@ export const validateQueryParams =
           details: formattedErrors,
         });
       }
-      console.error("Getting error while parsing query params: ", err);
+      logger.error("Error parsing query params: %s", err.message);
       responseHandler(res, false, 400, "Internal server error");
     }
   };

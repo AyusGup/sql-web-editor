@@ -5,6 +5,7 @@ import { gradeResult } from "../grader/grader.service";
 import Assignment from "../../db/models/Assignment";
 import UserProgress from "../../db/models/UserProgress";
 import { responseHandler } from "../../shared/response";
+import logger from "../../shared/logger";
 
 
 export async function executeController(req: Request, res: Response) {
@@ -52,7 +53,7 @@ export async function executeController(req: Request, res: Response) {
       }
     );
   } catch (err: any) {
-    console.error("Error while executing query in sandbox:", err);
+    logger.error("Error while executing query in sandbox: %s", err.message);
 
     // PostgreSQL specific error codes (Class 42 — Syntax Error or Access Rule Violation)
     // or specific validation errors

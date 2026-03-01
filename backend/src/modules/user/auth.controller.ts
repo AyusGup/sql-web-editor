@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { setAuthCookie, clearAuthCookie } from "../../utils/auth.utils";
 import { createUser, findByUsername } from "./user.service";
+import logger from "../../shared/logger";
 
 
 export const registerController = async (req: Request, res: Response) => {
@@ -10,9 +11,9 @@ export const registerController = async (req: Request, res: Response) => {
     if (existingUser) return res.status(400).json({ error: "Username taken" });
 
     const user = await createUser(username, password);
-    console.log(user);
+    logger.debug("User created: %s", user.username);
     setAuthCookie(res, user._id.toString());
-    console.log("cookie set");
+    logger.debug("Auth cookie set for user: %s", user.username);
 
     res.status(201).json({ message: "User created", user: { username: user.username } });
   } catch (error) {
