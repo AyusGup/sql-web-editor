@@ -1,15 +1,12 @@
 export function validateQuery(query: string) {
   let normalized = query.trim().toLowerCase();
 
-  // Remove SQL comments
   normalized = normalized.replace(/--.*$/gm, "");
 
-  // Allow one trailing semicolon
   if (normalized.endsWith(";")) {
     normalized = normalized.slice(0, -1);
   }
 
-  // Prevent multiple queries
   if (normalized.includes(";")) {
     throw new Error("Multiple queries not allowed");
   }
@@ -26,7 +23,7 @@ export function validateQuery(query: string) {
     "revoke",
     "set ",
     "reset",
-    "create", 
+    "create",
     "vacuum"
   ];
 

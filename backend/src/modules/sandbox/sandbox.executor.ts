@@ -1,4 +1,4 @@
-import { runnerPool } from "../db/config/postgres";
+import { runnerPool } from "../../db/config/postgres";
 
 export async function executeSandboxQuery(
   schema: string,
@@ -13,6 +13,13 @@ export async function executeSandboxQuery(
     const result = await client.query(query);
 
     await client.query("ROLLBACK");
+
+    // If multiple queries were sent, pg returns an array of result objects.
+    // We return the rows from the LAST query executed.
+    if (Array.isArray(result)) {
+      const lastResult = result[result.length - 1];
+      return lastResult.rows || [];
+    }
 
     return result.rows;
   } catch (err) {

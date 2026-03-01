@@ -2,10 +2,10 @@ import { Request, Response } from "express";
 import {
   getAssignments,
   getAssignmentById,
-} from "../services/assignment.service";
-import { responseHandler } from "../shared/response";
-import UserProgress from "../db/models/UserProgress";
-import { getUserProgressById } from "../services/user.service";
+} from "./assignment.service";
+import { responseHandler } from "../../shared/response";
+import UserProgress from "../../db/models/UserProgress";
+import { getUserProgressById } from "../user/user.service";
 
 
 export async function listAssignments(req: Request, res: Response) {

@@ -1,4 +1,4 @@
-import Assignment from "../db/models/Assignment";
+import Assignment from "../../db/models/Assignment";
 
 export async function getAssignments({
   page = 1,

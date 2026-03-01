@@ -1,8 +1,8 @@
 import { Router } from "express";
-import assignmentRoutes from "./assignment.routes";
-import sandboxRoutes from "./sandbox.routes";
-import hintRoutes from "./hint.routes";
-import userRoutes from "./user.routes";
+import assignmentRoutes from "../../modules/assignment/assignment.routes";
+import sandboxRoutes from "../../modules/sandbox/sandbox.routes";
+import hintRoutes from "../../modules/hint/hint.routes";
+import userRoutes from "../../modules/user/user.routes";
 
 const router = Router();
 

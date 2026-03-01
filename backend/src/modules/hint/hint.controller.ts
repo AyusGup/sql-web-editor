@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import { getSQLHint } from "../services/hint.service";
-import { responseHandler } from "../shared/response";
+import { getSQLHint } from "./hint.service";
+import { responseHandler } from "../../shared/response";
 
 
 export async function getSQLHintController(req: Request, res: Response) {

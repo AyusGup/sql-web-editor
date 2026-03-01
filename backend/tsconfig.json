@@ -9,6 +9,15 @@
     "skipLibCheck": true,
     "resolveJsonModule": true
   },
-  "include": ["src/**/*", "../scripts/**/*"],
-  "exclude": ["node_modules"]
+  "include": [
+    "src/**/*",
+    "../scripts/**/*",
+    "src/modules/sandbox",
+    "src/modules/assignment/assignment.controller.ts",
+    "src/modules/user/auth.controller.ts",
+    "src/modules/hint/hint.controller.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
 }

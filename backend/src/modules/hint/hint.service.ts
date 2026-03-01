@@ -1,8 +1,8 @@
-import Assignment from "../db/models/Assignment";
+import Assignment from "../../db/models/Assignment";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
 
-if(!process.env.GEMINI_API_KEY || !process.env.GEMINI_MODEL){
+if (!process.env.GEMINI_API_KEY || !process.env.GEMINI_MODEL) {
   throw Error("GEMINI Credentials Missing");
 }
 
@@ -19,11 +19,11 @@ export async function getSQLHint(
 
   // Fetch problem
   const assignment = await Assignment.findById(problemId).lean();
-  
+
   if (!assignment) {
     throw new Error("ASSIGNMENT_NOT_FOUND");
   }
-  
+
   // Format schema
   const formattedSchema = assignment.sampleTables
     .map(

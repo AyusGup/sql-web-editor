@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import { setAuthCookie, clearAuthCookie } from "../utils/auth.utils";
-import { createUser, findByUsername } from "../services/user.service";
+import { setAuthCookie, clearAuthCookie } from "../../utils/auth.utils";
+import { createUser, findByUsername } from "./user.service";
 
 
 export const registerController = async (req: Request, res: Response) => {

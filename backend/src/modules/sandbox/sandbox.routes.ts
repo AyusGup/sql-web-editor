@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { executeController } from "../../controllers/sandbox.controller";
+import { executeController } from "./sandbox.controller";
 import { executeQuerySchema } from "../../shared/zod/schema";
 import { validateBody } from "../../middlewares/schema-validation.middleware";
 import { protect } from "../../middlewares/auth.middleware";

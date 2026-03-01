@@ -1,4 +1,4 @@
-import Assignment from "../db/models/Assignment";
+import Assignment from "../../db/models/Assignment";
 import { PoolClient } from "pg";
 
 export async function seedSandbox(
