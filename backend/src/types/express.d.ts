@@ -3,8 +3,9 @@ declare global {
     interface Request {
       validatedQuery?: any;
       userId?: string;
+      role?: string;
     }
   }
 }
 
-export {};
+export { };

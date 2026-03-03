@@ -16,4 +16,5 @@ export interface IExpectedOutput {
 
 export interface JWTPayload {
   userId: string;
+  role: string;
 }

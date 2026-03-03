@@ -12,7 +12,7 @@ export async function getUserProgressById(userId: string, assignmentId: string) 
 }
 
 export async function findByUsername(username: string) {
-  const user = await User.findOne({ username });
+  const user = await User.findOne({ username: username.toLowerCase() });
   return user;
 }
 

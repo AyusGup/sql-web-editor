@@ -8,6 +8,7 @@ import cors from "cors";
 import morgan from 'morgan';
 import logger from './shared/logger';
 import bullBoardAdapter from './shared/bull-board';
+import { protect, authorize } from "./middlewares/auth.middleware";
 
 dotenv.config();
 
@@ -31,7 +32,7 @@ app.use(morgan(':method :url :status :res[content-length] - :response-time ms', 
 app.use(express.json());
 app.use(cookieParser());
 
-app.use('/admin/queues', bullBoardAdapter.getRouter());
+app.use('/admin/queues', protect, authorize("admin"), bullBoardAdapter.getRouter());
 app.use("/api", apiHandler);
 
 async function startServer() {

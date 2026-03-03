@@ -3,8 +3,8 @@ import jwt from "jsonwebtoken";
 import { COOKIE_EXPIRY } from "../shared/constants";
 
 
-export const setAuthCookie = (res: Response, userId: string) => {
-  const token = jwt.sign({ userId }, process.env.JWT_SECRET!, {
+export const setAuthCookie = (res: Response, userId: string, role: string) => {
+  const token = jwt.sign({ userId, role }, process.env.JWT_SECRET!, {
     expiresIn: "30d",
   });
 

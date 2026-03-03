@@ -13,8 +13,18 @@ export const protect = (req: Request, res: Response, next: NextFunction) => {
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET!) as JWTPayload;
     req.userId = decoded.userId;
+    req.role = decoded.role;
     next();
   } catch (error) {
     return res.status(401).json({ error: "Session expired or invalid" });
   }
+};
+
+export const authorize = (...roles: string[]) => {
+  return (req: Request, res: Response, next: NextFunction) => {
+    if (!req.role || !roles.includes(req.role)) {
+      return res.status(403).json({ error: "You do not have permission to perform this action" });
+    }
+    next();
+  };
 };
