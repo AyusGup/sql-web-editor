@@ -4,7 +4,7 @@ import type { ListParams } from '../../services/assignmentApi'
 import type { AssignmentListItem, Assignment, UserProgress } from '../../types/assignment'
 import type { Pagination } from '../../types/api'
 import { QUERY } from '../../constants/query'
-import { executeQueryThunk } from '../editor/editorSlice'
+import { submitQueryThunk } from '../editor/editorSlice'
 
 interface AssignmentsState {
     list: AssignmentListItem[]
@@ -82,9 +82,19 @@ const assignmentsSlice = createSlice({
                 state.detailLoading = false
                 state.error = payload as string
             })
-            .addCase(executeQueryThunk.fulfilled, (state, { payload }) => {
-                if (payload.grading.correct && state.progress) {
-                    state.progress.isCompleted = true;
+            .addCase(submitQueryThunk.fulfilled, (state, { payload }) => {
+                if (payload.grading.correct) {
+                    if (state.progress) {
+                        state.progress.isCompleted = true
+                    } else {
+                        // Create initial progress state if it didn't exist
+                        state.progress = {
+                            isCompleted: true,
+                            sqlQuery: '',
+                            attemptCount: 1,
+                            lastAttempt: new Date().toISOString()
+                        }
+                    }
                 }
             })
     },

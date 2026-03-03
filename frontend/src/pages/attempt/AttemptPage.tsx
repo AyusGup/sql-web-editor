@@ -5,8 +5,6 @@ import { useAppSelector } from '../../hooks/useRedux'
 import { fetchAssignment, clearCurrentAssignment } from '../../features/assignments/assignmentsSlice'
 import { resetEditor } from '../../features/editor/editorSlice'
 import { resetSave } from '../../features/save/saveSlice'
-import { logoutThunk } from '../../features/auth/authSlice'
-import { useAuth } from '../../hooks/useAuth'
 import { ROUTES } from '../../constants/routes'
 import QuestionPanel from '../../components/editor/QuestionPanel'
 import SampleDataViewer from '../../components/editor/SampleDataViewer'
@@ -21,7 +19,6 @@ export default function AttemptPage() {
     const { id } = useParams<{ id: string }>()
     const dispatch = useAppDispatch()
     const navigate = useNavigate()
-    const { username } = useAuth()
     const { currentAssignment, progress, detailLoading, error } = useAppSelector((s) => s.assignments)
     const [mobileTab, setMobileTab] = useState<MobileTab>('question')
 
@@ -34,12 +31,6 @@ export default function AttemptPage() {
             dispatch(resetSave())
         }
     }, [id, dispatch])
-
-
-    const handleLogout = async () => {
-        await dispatch(logoutThunk())
-        navigate(ROUTES.LOGIN)
-    }
 
     if (detailLoading) {
         return (
@@ -63,17 +54,6 @@ export default function AttemptPage() {
 
     return (
         <div className="attempt-page">
-            <header className="attempt-header">
-                <button className="btn btn-ghost btn-sm attempt-back" onClick={() => navigate(ROUTES.ASSIGNMENTS)}>
-                    Back
-                </button>
-                <span className="attempt-title">{currentAssignment.title}</span>
-                <div className="attempt-user">
-                    <span className="attempt-username">{username}</span>
-                    <button className="btn btn-ghost btn-sm" onClick={handleLogout}>Logout</button>
-                </div>
-            </header>
-
             <nav className="attempt-nav">
                 {(['question', 'editor', 'results'] as MobileTab[]).map((tab) => (
                     <button
@@ -92,7 +72,7 @@ export default function AttemptPage() {
                         <QuestionPanel assignment={currentAssignment} isCompleted={progress?.isCompleted} />
                     </div>
                     <div className="attempt-panel">
-                        <SampleDataViewer tables={currentAssignment.sampleTables} />
+                        <SampleDataViewer testcases={currentAssignment.testcases} />
                     </div>
                 </div>
 
@@ -107,7 +87,7 @@ export default function AttemptPage() {
 
                 <div className={`attempt-right${mobileTab !== 'results' ? ' is-hidden' : ''}`}>
                     <div className="attempt-panel">
-                        <ResultsPanel expectedOutput={currentAssignment.expectedOutput} />
+                        <ResultsPanel />
                     </div>
                 </div>
             </div>

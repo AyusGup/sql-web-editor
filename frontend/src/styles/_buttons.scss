@@ -34,6 +34,16 @@
     }
 }
 
+.btn-secondary {
+    background: $color-surface-2;
+    color: $color-text;
+    border: 1px solid $color-border;
+
+    &:hover:not(:disabled) {
+        background: color.adjust(#242840, $lightness: 5%);
+    }
+}
+
 .btn-ghost {
     background: transparent;
     color: $color-text;

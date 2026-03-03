@@ -17,6 +17,9 @@ export default function AssignmentCard({ assignment }: Props) {
                 <span className="badge" style={{ background: `${color}22`, color }}>
                     {difficulty}
                 </span>
+                {assignment.isCompleted && (
+                    <span className="badge badge-success">Completed</span>
+                )}
             </div>
 
             <h3 className="a-card-title">{title}</h3>

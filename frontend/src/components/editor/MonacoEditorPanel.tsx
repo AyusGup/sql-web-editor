@@ -1,9 +1,9 @@
-import { useRef, useEffect, useState } from 'react'
+import { useRef, useLayoutEffect, useState } from 'react'
 import Editor, { type OnMount } from '@monaco-editor/react'
 import type { editor as MonacoEditorNS } from 'monaco-editor'
 import { useAppDispatch } from '../../hooks/useRedux'
 import { useAppSelector } from '../../hooks/useRedux'
-import { setQuery, executeQueryThunk } from '../../features/editor/editorSlice'
+import { setQuery, runQueryThunk, submitQueryThunk } from '../../features/editor/editorSlice'
 import { useAutosave } from '../../hooks/useAutosave'
 import { theme } from '../../theme/tokens'
 import { QUERY } from '../../constants/query'
@@ -35,15 +35,14 @@ export default function MonacoEditorPanel({ assignmentId, initialQuery = '' }: P
 
     useAutosave(assignmentId, query)
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         const el = wrapperRef.current
         if (!el) return
-        const ro = new ResizeObserver((entries) => {
+        const ro = new ResizeObserver((entries: ResizeObserverEntry[]) => {
             const h = entries[0]?.contentRect.height
             if (h && h > 0) setEditorHeight(h)
         })
         ro.observe(el)
-        setEditorHeight(el.clientHeight || 400)
         return () => ro.disconnect()
     }, [])
 
@@ -62,7 +61,13 @@ export default function MonacoEditorPanel({ assignmentId, initialQuery = '' }: P
     const handleRun = () => {
         const current = editorRef.current?.getValue() ?? query
         if (!current.trim() || current.length > QUERY.MAX_QUERY_LENGTH) return
-        dispatch(executeQueryThunk({ assignmentId, query: current }))
+        dispatch(runQueryThunk({ assignmentId, query: current }))
+    }
+
+    const handleSubmit = () => {
+        const current = editorRef.current?.getValue() ?? query
+        if (!current.trim() || current.length > QUERY.MAX_QUERY_LENGTH) return
+        dispatch(submitQueryThunk({ assignmentId, query: current }))
     }
 
     const savedTime = lastSavedAt
@@ -79,11 +84,18 @@ export default function MonacoEditorPanel({ assignmentId, initialQuery = '' }: P
                         {saveStatus === SAVE_STATUS.SAVED && savedTime && ` at ${savedTime}`}
                     </span>
                     <button
-                        className="btn btn-primary btn-sm"
+                        className="btn btn-secondary btn-sm"
                         onClick={handleRun}
                         disabled={executing}
                     >
-                        {executing ? 'Running...' : 'Run'}
+                        Run
+                    </button>
+                    <button
+                        className="btn btn-primary btn-sm"
+                        onClick={handleSubmit}
+                        disabled={executing}
+                    >
+                        {executing ? '...' : 'Submit'}
                     </button>
                 </div>
             </div>

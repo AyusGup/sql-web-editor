@@ -1,0 +1,109 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.navbar {
+    background: rgba($color-bg, 0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid $color-border;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    transition: background $t-normal;
+
+    &-inner {
+        height: 64px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 $space-4;
+
+        &.is-fluid {
+            max-width: none;
+        }
+
+        @include respond-to(sm) {
+            padding: 0 $space-6;
+        }
+    }
+
+    &-left {
+        display: flex;
+        align-items: center;
+        gap: $space-4;
+    }
+
+    &-brand {
+        display: flex;
+        align-items: center;
+        gap: $space-3;
+        cursor: pointer;
+        user-select: none;
+        transition: transform $t-fast;
+
+        &:active {
+            transform: scale(0.98);
+        }
+    }
+
+    &-logo {
+        width: 32px;
+        height: 32px;
+        @include flex-center;
+        background: $color-primary;
+        color: #fff;
+        border-radius: $radius-md;
+        font-weight: $fw-bold;
+        font-size: $fs-lg;
+        box-shadow: 0 4px 12px rgba($color-primary, 0.3);
+    }
+
+    &-logo-text {
+        font-size: $fs-md;
+        font-weight: $fw-bold;
+        color: $color-text;
+        letter-spacing: -0.01em;
+        display: none;
+
+        @include respond-to(xs) {
+            display: block;
+        }
+    }
+
+    &-right {
+        display: flex;
+        align-items: center;
+        gap: $space-4;
+    }
+
+    &-user {
+        display: flex;
+        align-items: center;
+        gap: $space-3;
+    }
+
+    &-username {
+        font-size: $fs-sm;
+        font-weight: $fw-medium;
+        color: $color-muted;
+        display: none;
+
+        @include respond-to(md) {
+            display: block;
+        }
+    }
+
+    &-back {
+        @include respond-to(md) {
+            margin-right: $space-2;
+        }
+    }
+
+    &-logout {
+        border-color: transparent !important;
+
+        &:hover {
+            color: $color-danger !important;
+            background: rgba($color-danger, 0.1) !important;
+        }
+    }
+}

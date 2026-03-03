@@ -12,7 +12,8 @@ export const API_ROUTES = {
         GET: `${BASE}/assignment`,
     },
     SANDBOX: {
-        EXECUTE: `${BASE}/sandbox/execute`,
+        RUN: `${BASE}/sandbox/run`,
+        SUBMIT: `${BASE}/sandbox/submit`,
     },
     HINT: {
         GET: `${BASE}/hint`,

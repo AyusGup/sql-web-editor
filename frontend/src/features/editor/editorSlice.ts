@@ -24,15 +24,28 @@ const initialState: EditorState = {
     hintError: null,
 }
 
-export const executeQueryThunk = createAsyncThunk(
-    'editor/execute',
+export const runQueryThunk = createAsyncThunk(
+    'editor/run',
     async ({ assignmentId, query }: { assignmentId: string; query: string }, { rejectWithValue }) => {
         try {
-            const res = await sandboxApi.execute(assignmentId, query)
+            const res = await sandboxApi.run(assignmentId, query)
             return res.data.data as ExecuteResult
         } catch (err: unknown) {
             const e = err as { response?: { data?: { message?: string } } }
-            return rejectWithValue(e.response?.data?.message || 'Query execution failed')
+            return rejectWithValue(e.response?.data?.message || 'Run failed')
+        }
+    }
+)
+
+export const submitQueryThunk = createAsyncThunk(
+    'editor/submit',
+    async ({ assignmentId, query }: { assignmentId: string; query: string }, { rejectWithValue }) => {
+        try {
+            const res = await sandboxApi.submit(assignmentId, query)
+            return res.data.data as ExecuteResult
+        } catch (err: unknown) {
+            const e = err as { response?: { data?: { message?: string } } }
+            return rejectWithValue(e.response?.data?.message || 'Submission failed')
         }
     }
 )
@@ -65,12 +78,21 @@ const editorSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder
-            .addCase(executeQueryThunk.pending, (state) => { state.executing = true; state.executeError = null })
-            .addCase(executeQueryThunk.fulfilled, (state, { payload }) => {
+            .addCase(runQueryThunk.pending, (state) => { state.executing = true; state.executeError = null })
+            .addCase(runQueryThunk.fulfilled, (state, { payload }) => {
                 state.executing = false
                 state.result = payload
             })
-            .addCase(executeQueryThunk.rejected, (state, { payload }) => {
+            .addCase(runQueryThunk.rejected, (state, { payload }) => {
+                state.executing = false
+                state.executeError = payload as string
+            })
+            .addCase(submitQueryThunk.pending, (state) => { state.executing = true; state.executeError = null })
+            .addCase(submitQueryThunk.fulfilled, (state, { payload }) => {
+                state.executing = false
+                state.result = payload
+            })
+            .addCase(submitQueryThunk.rejected, (state, { payload }) => {
                 state.executing = false
                 state.executeError = payload as string
             })

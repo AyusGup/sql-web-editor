@@ -1,11 +1,7 @@
 import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 import { useAppDispatch } from '../../hooks/useRedux'
 import { useAppSelector } from '../../hooks/useRedux'
 import { fetchAssignments } from '../../features/assignments/assignmentsSlice'
-import { logoutThunk } from '../../features/auth/authSlice'
-import { useAuth } from '../../hooks/useAuth'
-import { ROUTES } from '../../constants/routes'
 import { QUERY } from '../../constants/query'
 import type { Difficulty } from '../../constants/query'
 import AssignmentCard from '../../components/assignments/AssignmentCard'
@@ -14,8 +10,6 @@ import './AssignmentListPage.scss'
 
 export default function AssignmentListPage() {
     const dispatch = useAppDispatch()
-    const navigate = useNavigate()
-    const { username } = useAuth()
     const { list, pagination, loading, error } = useAppSelector((s) => s.assignments)
 
     const [difficulty, setDifficulty] = useState<Difficulty | ''>('')
@@ -30,26 +24,8 @@ export default function AssignmentListPage() {
         setPage(1)
     }
 
-    const handleLogout = async () => {
-        await dispatch(logoutThunk())
-        navigate(ROUTES.LOGIN)
-    }
-
     return (
         <div className="list-page">
-            <header className="list-header">
-                <div className="container list-header-inner">
-                    <div className="list-brand">
-                        <span className="list-logo">S</span>
-                        <span className="list-logo-text">SQL Editor</span>
-                    </div>
-                    <div className="list-user">
-                        <span className="list-username">{username}</span>
-                        <button className="btn btn-ghost btn-sm" onClick={handleLogout}>Logout</button>
-                    </div>
-                </div>
-            </header>
-
             <main className="container list-main">
                 <div className="list-hero">
                     <h1>SQL Assignments</h1>

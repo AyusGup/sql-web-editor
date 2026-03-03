@@ -94,3 +94,18 @@
     border-top: 1px solid $color-border;
     margin: $space-4 0;
 }
+
+.protected-layout {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden;
+
+    .protected-content {
+        flex: 1;
+        overflow-y: auto;
+        min-height: 0;
+        display: flex;
+        flex-direction: column;
+    }
+}

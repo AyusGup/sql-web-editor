@@ -16,13 +16,19 @@ export interface ExpectedOutput {
     value: unknown
 }
 
+export interface Testcase {
+    _id: string
+    sampleTables: SampleTable[]
+    expectedOutput: ExpectedOutput
+    visible: boolean
+}
+
 export interface Assignment {
     _id: string
     title: string
     difficulty: Difficulty
     question: string
-    sampleTables: SampleTable[]
-    expectedOutput: ExpectedOutput
+    testcases: Testcase[]
     tags: string[]
     createdAt: string
 }
@@ -39,8 +45,16 @@ export interface Grading {
     message: string
 }
 
-export interface ExecuteResult {
+export interface RunResult {
+    testcaseId: string
     rows: Record<string, unknown>[]
+    grading: Grading
+    visible: boolean
+}
+
+export interface ExecuteResult {
+    type: 'run' | 'submit'
+    results: RunResult[]
     grading: Grading
 }
 
@@ -50,4 +64,5 @@ export interface AssignmentListItem {
     difficulty: Difficulty
     tags: string[]
     createdAt: string
+    isCompleted?: boolean
 }
