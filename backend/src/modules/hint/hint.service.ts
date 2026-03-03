@@ -1,6 +1,7 @@
 import Assignment from "../../db/models/Assignment";
 import { GoogleGenerativeAI } from "@google/generative-ai";
-
+import { getTestcasesForAssignment } from "../assignment/assignment.service";
+import { ISampleTable } from "../../types/schema";
 
 if (!process.env.GEMINI_API_KEY || !process.env.GEMINI_MODEL) {
   throw Error("GEMINI Credentials Missing");
@@ -24,12 +25,20 @@ export async function getSQLHint(
     throw new Error("ASSIGNMENT_NOT_FOUND");
   }
 
-  // Format schema
-  const formattedSchema = assignment.sampleTables
+  // Fetch only the first testcase to define the requirement without bloating the context window
+  const testcases = await getTestcasesForAssignment(problemId);
+  if (!testcases.length) {
+    throw new Error("TESTCASES_NOT_FOUND");
+  }
+
+  const firstTestcase = testcases[0];
+
+  // Format schema from the first testcase
+  const formattedSchema = firstTestcase.sampleTables
     .map(
-      (t) =>
+      (t: ISampleTable) =>
         `${t.tableName}(\n${t.columns
-          .map((c) => `  ${c.columnName} ${c.dataType}`)
+          .map((c: any) => `  ${c.columnName} ${c.dataType}`)
           .join(",\n")}\n)`
     )
     .join("\n");
@@ -41,7 +50,7 @@ export async function getSQLHint(
     Rules:
     - Never give full SQL query.
     - Only guide logically.
-    - Identify mistakes by comparing output with expected result.
+    - Identify mistakes by comparing user query intent with the required output.
 
     Problem:
     ${assignment.question}
@@ -53,9 +62,9 @@ export async function getSQLHint(
     ${userQuery}
 
     Expected output:
-    ${JSON.stringify(assignment.expectedOutput.value)}
+    ${JSON.stringify(firstTestcase.expectedOutput.value)}
 
-    Provide only a hint.
+    Provide only a helpful logical hint.
     `;
 
   const result = await geminiModel.generateContent(prompt);

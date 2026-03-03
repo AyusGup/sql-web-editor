@@ -18,6 +18,7 @@ export async function listAssignments(req: Request, res: Response) {
       limit: Number(limit) || 10,
       difficulty: difficulty as string,
       tags: tags ? (Array.isArray(tags) ? (tags as string[]) : (tags as string).split(",")) : undefined,
+      userId: req.userId as string,
     });
 
     return responseHandler(

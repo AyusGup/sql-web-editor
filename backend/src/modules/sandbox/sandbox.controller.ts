@@ -4,13 +4,14 @@ import { validateQuery } from "./query.validator";
 import { gradeResult } from "../grader/grader.service";
 import Assignment from "../../db/models/Assignment";
 import UserProgress from "../../db/models/UserProgress";
+import { getTestcasesForAssignment } from "../assignment/assignment.service";
 import { responseHandler } from "../../shared/response";
 import logger from "../../shared/logger";
 
 
 export async function executeController(req: Request, res: Response) {
   try {
-    const { assignmentId, query } = req.body;
+    const { assignmentId, query, type = "run" } = req.body;
 
     validateQuery(query);
 
@@ -25,31 +26,92 @@ export async function executeController(req: Request, res: Response) {
       );
     }
 
-    // Execute query through the full sandbox flow:
-    //   Cache check → DB lookup → Schema create → Execute → Job management → Error recovery
-    const rows = await executeInSandbox(req.userId as string, assignmentId, query);
+    // Fetch testcases based on type
+    const testcases = await getTestcasesForAssignment(assignmentId, type === "run");
 
-    // Grade result
-    const grading = gradeResult(rows, assignment.expectedOutput);
+    if (!testcases.length) {
+      return responseHandler(
+        res,
+        false,
+        500,
+        "No testcases found for this assignment"
+      );
+    }
 
-    await UserProgress.findOneAndUpdate(
-      { userId: req.userId, assignmentId },
-      {
+    const testcaseResults: any[] = [];
+    let allPassed = true;
+    let failedIdx = -1;
+
+    for (let i = 0; i < testcases.length; i++) {
+      const tc = testcases[i];
+      const tid = (tc._id as any).toString();
+
+      const rows = await executeInSandbox(
+        req.userId as string,
+        tid,
+        tc.sampleTables,
+        query
+      );
+
+      const grading = gradeResult(rows, tc.expectedOutput);
+
+      // Only expose details for visible testcases
+      if (tc.visible) {
+        testcaseResults.push({
+          testcaseId: tid,
+          rows,
+          grading,
+          visible: tc.visible
+        });
+      }
+
+      if (!grading.correct) {
+        allPassed = false;
+        failedIdx = i;
+        if (type === "submit") break; // Stop at first failure on submit
+      }
+    }
+
+    // Prepare overall status
+    const gradingResponse = {
+      correct: allPassed,
+      message: allPassed
+        ? type === "submit"
+          ? `Assignment completed successfully! All ${testcases.length} test cases passed.`
+          : `Success: Your query passed all sample test cases. Click 'Submit' to finish.`
+        : type === "submit"
+          ? `Failed: Wrong answer at test case ${failedIdx + 1}.`
+          : `Failed: One or more visible test cases did not match sample output.`
+    };
+
+    // Update progress only on SUBMIT
+    if (type === "submit") {
+      const updateData: any = {
         $set: { sqlQuery: query, lastAttempt: new Date() },
-        $inc: { attemptCount: 1 },
-        $max: { isCompleted: grading.correct }
-      },
-      { upsert: true, new: true }
-    );
+        $inc: { attemptCount: 1 }
+      };
+
+      // Only set isCompleted to true if passed, never set it back to false
+      if (allPassed) {
+        updateData.$set.isCompleted = true;
+      }
+
+      await UserProgress.findOneAndUpdate(
+        { userId: req.userId, assignmentId },
+        updateData,
+        { upsert: true, new: true }
+      );
+    }
 
     return responseHandler(
       res,
       true,
       200,
-      "Query Executed Successfully",
+      "Execution Complete",
       {
-        rows,
-        grading,
+        type,
+        results: testcaseResults,
+        grading: gradingResponse
       }
     );
   } catch (err: any) {

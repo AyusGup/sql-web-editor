@@ -1,15 +1,12 @@
-import Assignment from "../../db/models/Assignment";
 import { PoolClient } from "pg";
+import { ISampleTable } from "../../types/schema";
 
 export async function seedSandbox(
   client: PoolClient,
-  assignmentId: string,
+  sampleTables: ISampleTable[],
   schema: string
 ) {
-  const assignment = await Assignment.findById(assignmentId).lean();
-  if (!assignment) throw new Error("Assignment not found");
-
-  for (const table of assignment.sampleTables) {
+  for (const table of sampleTables) {
     const columns = table.columns
       .map((c: any) => `${c.columnName} ${c.dataType}`)
       .join(",");

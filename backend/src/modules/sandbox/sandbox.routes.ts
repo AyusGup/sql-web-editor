@@ -6,6 +6,14 @@ import { protect } from "../../middlewares/auth.middleware";
 
 const router = Router();
 
-router.post("/execute", validateBody(executeQuerySchema), protect, executeController);
+router.post("/run", validateBody(executeQuerySchema), protect, (req, res, next) => {
+    req.body.type = "run";
+    next();
+}, executeController);
+
+router.post("/submit", validateBody(executeQuerySchema), protect, (req, res, next) => {
+    req.body.type = "submit";
+    next();
+}, executeController);
 
 export default router;

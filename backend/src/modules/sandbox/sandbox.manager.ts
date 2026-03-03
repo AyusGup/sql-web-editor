@@ -3,28 +3,37 @@ import { adminPool } from "../../db/config/postgres";
 import { seedSandbox } from "./sandbox.seeder";
 import { executeSandboxQuery } from "./sandbox.executor";
 import { TTL } from "../../shared/constants";
-import { getKey, getSchema } from "../../utils/helper";
 import { cleanupQueue } from "../queue/cleanup.queue";
 import { MAX_RETRIES } from "../../shared/constants";
+import { ISampleTable } from "../../types/schema";
 
+
+function getKey(userId: string, testcaseId: string) {
+  return `sandbox:${userId}:${testcaseId}`;
+}
+
+function getSchema(userId: string, testcaseId: string) {
+  return `workspace_${userId}_${testcaseId}`;
+}
 
 
 export async function executeInSandbox(
   userId: string,
-  assignmentId: string,
+  testcaseId: string,
+  sampleTables: ISampleTable[],
   query: string,
   retryCount = 0
 ): Promise<Record<string, unknown>[]> {
   const redis = getRedis();
-  const key = getKey(userId, assignmentId);
-  const schema = getSchema(userId, assignmentId);
+  const key = getKey(userId, testcaseId);
+  const schema = getSchema(userId, testcaseId);
 
   // Check Cache
   const cached = await redis.get(key);
 
   if (cached) {
     // Cache HIT → Execute Query
-    return executeAndManageJob(schema, query, key, userId, assignmentId, retryCount);
+    return executeAndManageJob(schema, query, key, userId, testcaseId, sampleTables, retryCount);
   }
 
   // Cache MISS → DB Lookup for Schema 
@@ -40,22 +49,22 @@ export async function executeInSandbox(
       // Schema exists in DB → Execute Query 
       // Set in cache first since we found it
       await redis.set(key, schema, { EX: TTL });
-      return executeAndManageJob(schema, query, key, userId, assignmentId, retryCount);
+      return executeAndManageJob(schema, query, key, userId, testcaseId, sampleTables, retryCount);
     }
   } finally {
     client.release();
   }
 
   // Schema NOT found → Create Schema
-  await createSchema(schema, assignmentId, key);
+  await createSchema(schema, sampleTables, key);
 
   // Execute Query on the newly created schema
-  return executeAndManageJob(schema, query, key, userId, assignmentId, retryCount);
+  return executeAndManageJob(schema, query, key, userId, testcaseId, sampleTables, retryCount);
 }
 
 async function createSchema(
   schema: string,
-  assignmentId: string,
+  sampleTables: ISampleTable[],
   cacheKey: string
 ) {
   const redis = getRedis();
@@ -88,7 +97,7 @@ async function createSchema(
 
   try {
     await client.query(`CREATE SCHEMA ${schema}`);
-    await seedSandbox(client, assignmentId, schema);
+    await seedSandbox(client, sampleTables, schema);
 
     // Grant the runner user access ONLY to this specific temporary schema
     await client.query(`GRANT USAGE ON SCHEMA ${schema} TO read_write_runner`);
@@ -113,7 +122,8 @@ async function executeAndManageJob(
   query: string,
   cacheKey: string,
   userId: string,
-  assignmentId: string,
+  testcaseId: string,
+  sampleTables: ISampleTable[],
   retryCount: number
 ): Promise<Record<string, unknown>[]> {
   const redis = getRedis();
@@ -123,7 +133,7 @@ async function executeAndManageJob(
     const rows = await executeSandboxQuery(schema, query);
 
     // Query PASSED → Manage delayed cleanup job 
-    await manageCleanupJob(schema, userId, assignmentId);
+    await manageCleanupJob(schema, userId, testcaseId);
 
     // Set schema state in cache (refresh TTL)
     await redis.expire(cacheKey, TTL);
@@ -142,7 +152,7 @@ async function executeAndManageJob(
       await redis.del(cacheKey);
 
       // Retry Process Again
-      return executeInSandbox(userId, assignmentId, query, retryCount + 1);
+      return executeInSandbox(userId, testcaseId, sampleTables, query, retryCount + 1);
     }
 
     throw err;
@@ -164,9 +174,9 @@ function isSchemaNotFound(err: any): boolean {
 async function manageCleanupJob(
   schema: string,
   userId: string,
-  assignmentId: string
+  testcaseId: string
 ) {
-  const jobId = `cleanup:${userId}:${assignmentId}`;
+  const jobId = `cleanup:${userId}:${testcaseId}`;
   const delay = TTL * 1000;
 
   const existing = await cleanupQueue.getJob(jobId);
@@ -204,9 +214,9 @@ async function scheduleNewCleanupJob(schema: string, jobId: string, delay: numbe
 }
 
 
-export async function resetSandbox(userId: string, assignmentId: string) {
+export async function resetSandbox(userId: string, testcaseId: string) {
   const redis = getRedis();
-  const schema = getSchema(userId, assignmentId);
+  const schema = getSchema(userId, testcaseId);
 
   const client = await adminPool.connect();
 
@@ -216,5 +226,5 @@ export async function resetSandbox(userId: string, assignmentId: string) {
     client.release();
   }
 
-  await redis.del(getKey(userId, assignmentId));
+  await redis.del(getKey(userId, testcaseId));
 }

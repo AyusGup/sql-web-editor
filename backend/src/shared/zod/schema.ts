@@ -39,7 +39,7 @@ export const saveSchema = z.object({
 
 export const executeQuerySchema = z.object({
   assignmentId: objectId,
-
+  type: z.enum(["run", "submit"]).default("run"),
   query: z
     .string()
     .min(1, "Query cannot be empty")
