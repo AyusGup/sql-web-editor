@@ -24,11 +24,13 @@ const AssignmentSchema = new Schema<IAssignment>(
     },
     question: { type: String, required: true },
 
-    version: { type: Number, default: 1 },
+    version: { type: Number, default: 0 },
     tags: [{ type: String, index: true }],
   },
   {
     timestamps: true,
+    optimisticConcurrency: true,
+    versionKey: "version",
   }
 );
 

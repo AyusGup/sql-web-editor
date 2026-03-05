@@ -5,7 +5,7 @@ export interface ITestcase extends Document {
     sampleTables: ISampleTable[];
     expectedOutput: IExpectedOutput;
     visible: boolean;
-
+    version: number;
     createdAt: Date;
     updatedAt: Date;
 }
@@ -44,9 +44,12 @@ const TestcaseSchema = new Schema<ITestcase>(
         sampleTables: { type: [SampleTableSchema], required: true },
         expectedOutput: { type: ExpectedOutputSchema, required: true },
         visible: { type: Boolean, default: true },
+        version: { type: Number, default: 0 },
     },
     {
         timestamps: true,
+        optimisticConcurrency: true,
+        versionKey: "version",
     }
 );
 

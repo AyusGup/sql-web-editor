@@ -40,6 +40,9 @@ export const updateAssignment = async (req: Request, res: Response) => {
         if (!assignment) return responseHandler(res, false, 404, "Assignment not found");
         responseHandler(res, true, 200, "Assignment updated", assignment);
     } catch (error: any) {
+        if (error.message === "CONFLICT") {
+            return responseHandler(res, false, 409, "Conflict: assignment was modified by another admin. Please reload.");
+        }
         logger.error("Admin assignment update failed: %s", error.message);
         responseHandler(res, false, 500, "Failed to update assignment");
     }
@@ -84,6 +87,9 @@ export const updateTestcase = async (req: Request, res: Response) => {
         if (!testcase) return responseHandler(res, false, 404, "Testcase not found");
         responseHandler(res, true, 200, "Testcase updated", testcase);
     } catch (error: any) {
+        if (error.message === "CONFLICT") {
+            return responseHandler(res, false, 409, "Conflict: testcase was modified by another admin. Please reload.");
+        }
         logger.error("Admin testcase update failed: %s", error.message);
         responseHandler(res, false, 500, "Failed to update testcase");
     }

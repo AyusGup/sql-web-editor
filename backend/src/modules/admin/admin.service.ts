@@ -26,7 +26,18 @@ export async function createAssignmentAdmin(data: any) {
 }
 
 export async function updateAssignmentAdmin(id: string, data: any) {
-    return Assignment.findByIdAndUpdate(id, data, { new: true }).lean();
+    const { version, ...updateData } = data;
+    const filter: any = { _id: id };
+    if (typeof version === "number") filter.version = version;
+
+    const doc = await Assignment.findOneAndUpdate(
+        filter,
+        { $set: updateData, $inc: { version: 1 } },
+        { new: true }
+    ).lean();
+
+    if (!doc && typeof version === "number") throw new Error("CONFLICT");
+    return doc;
 }
 
 export async function deleteAssignmentAdmin(id: string) {
@@ -76,7 +87,18 @@ export async function createTestcaseAdmin(data: any) {
 }
 
 export async function updateTestcaseAdmin(id: string, data: any) {
-    return Testcase.findByIdAndUpdate(id, data, { new: true }).lean();
+    const { version, ...updateData } = data;
+    const filter: any = { _id: id };
+    if (typeof version === "number") filter.version = version;
+
+    const doc = await Testcase.findOneAndUpdate(
+        filter,
+        { $set: updateData, $inc: { version: 1 } },
+        { new: true }
+    ).lean();
+
+    if (!doc && typeof version === "number") throw new Error("CONFLICT");
+    return doc;
 }
 
 export async function deleteTestcaseAdmin(id: string) {

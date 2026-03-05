@@ -27,9 +27,7 @@ export function gradeResult(userRows: any[], expected: any) {
   return { correct: false, reason: "Unsupported grading" };
 }
 
-function gradeTable(userRows: any[], expectedData: any) {
-  const expectedRows = Array.isArray(expectedData) ? expectedData : (expectedData?.rows || []);
-
+function gradeTable(userRows: any[], expectedRows: any[]) {
   if (userRows.length !== expectedRows.length) {
     return {
       correct: false,
