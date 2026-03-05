@@ -84,7 +84,6 @@ async function createSchema(
         [schema]
       );
       if (exists.rowCount && exists.rowCount > 0) {
-        await redis.set(cacheKey, schema, { EX: TTL });
         return; // Schema was created by the other process
       }
     } finally {
