@@ -29,6 +29,14 @@ export async function updateAssignmentAdmin(id: string, data: any) {
     return Assignment.findByIdAndUpdate(id, data, { new: true }).lean();
 }
 
+export async function deleteAssignmentAdmin(id: string) {
+    const [deleted] = await Promise.all([
+        Assignment.findByIdAndDelete(id).lean(),
+        AssignmentTestcase.deleteMany({ assignmentId: id }),
+    ]);
+    return deleted;
+}
+
 export async function getAllTestcasesAdmin() {
     return Testcase.aggregate([
         { $sort: { createdAt: -1 } },
@@ -69,6 +77,14 @@ export async function createTestcaseAdmin(data: any) {
 
 export async function updateTestcaseAdmin(id: string, data: any) {
     return Testcase.findByIdAndUpdate(id, data, { new: true }).lean();
+}
+
+export async function deleteTestcaseAdmin(id: string) {
+    const [deleted] = await Promise.all([
+        Testcase.findByIdAndDelete(id).lean(),
+        AssignmentTestcase.deleteMany({ testcaseId: id }),
+    ]);
+    return deleted;
 }
 
 export async function searchAssignmentsAdmin(query: string) {

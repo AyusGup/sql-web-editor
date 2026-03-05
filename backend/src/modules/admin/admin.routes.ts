@@ -15,9 +15,11 @@ router.get("/testcases", adminController.listTestcases);
 
 router.post("/assignments", adminController.createAssignment);
 router.patch("/assignments/:id", adminController.updateAssignment);
+router.delete("/assignments/:id", adminController.deleteAssignment);
 
 router.post("/testcases", adminController.createTestcase);
 router.patch("/testcases/:id", adminController.updateTestcase);
+router.delete("/testcases/:id", adminController.deleteTestcase);
 
 router.put("/testcases/:id/links", adminController.syncLinks);
 

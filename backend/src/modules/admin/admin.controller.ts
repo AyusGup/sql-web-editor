@@ -45,6 +45,18 @@ export const updateAssignment = async (req: Request, res: Response) => {
     }
 };
 
+export const deleteAssignment = async (req: Request, res: Response) => {
+    const { id } = req.params;
+    try {
+        const deleted = await adminService.deleteAssignmentAdmin(String(id));
+        if (!deleted) return responseHandler(res, false, 404, "Assignment not found");
+        responseHandler(res, true, 200, "Assignment deleted", deleted);
+    } catch (error: any) {
+        logger.error("Admin assignment delete failed: %s", error.message);
+        responseHandler(res, false, 500, "Failed to delete assignment");
+    }
+};
+
 export const listTestcases = async (req: Request, res: Response) => {
     try {
         const list = await adminService.getAllTestcasesAdmin();
@@ -74,6 +86,18 @@ export const updateTestcase = async (req: Request, res: Response) => {
     } catch (error: any) {
         logger.error("Admin testcase update failed: %s", error.message);
         responseHandler(res, false, 500, "Failed to update testcase");
+    }
+};
+
+export const deleteTestcase = async (req: Request, res: Response) => {
+    const { id } = req.params;
+    try {
+        const deleted = await adminService.deleteTestcaseAdmin(String(id));
+        if (!deleted) return responseHandler(res, false, 404, "Testcase not found");
+        responseHandler(res, true, 200, "Testcase deleted", deleted);
+    } catch (error: any) {
+        logger.error("Admin testcase delete failed: %s", error.message);
+        responseHandler(res, false, 500, "Failed to delete testcase");
     }
 };
 
