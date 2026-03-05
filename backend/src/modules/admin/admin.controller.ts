@@ -98,3 +98,14 @@ export const unlinkTestcase = async (req: Request, res: Response) => {
         responseHandler(res, false, 500, "Failed to unlink testcase");
     }
 };
+
+export const searchAssignments = async (req: Request, res: Response) => {
+    try {
+        const q = req.query.q as string || "";
+        const results = await adminService.searchAssignmentsAdmin(q);
+        responseHandler(res, true, 200, "Search results", results);
+    } catch (error: any) {
+        logger.error("Admin assignment search failed: %s", error.message);
+        responseHandler(res, false, 500, "Failed to search assignments");
+    }
+};

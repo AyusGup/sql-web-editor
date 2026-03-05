@@ -10,6 +10,7 @@ router.use(protect, authorize("admin"));
 router.get("/summary", adminController.getSummary);
 
 router.get("/assignments", adminController.listAssignments);
+router.get("/assignments/search", adminController.searchAssignments);
 router.get("/testcases", adminController.listTestcases);
 
 router.post("/assignments", adminController.createAssignment);

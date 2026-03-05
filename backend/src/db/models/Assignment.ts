@@ -33,5 +33,6 @@ const AssignmentSchema = new Schema<IAssignment>(
 );
 
 AssignmentSchema.index({ difficulty: 1, tags: 1 });
+AssignmentSchema.index({ title: "text" });
 
 export default mongoose.model<IAssignment>("Assignment", AssignmentSchema);
