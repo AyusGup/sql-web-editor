@@ -1,5 +1,6 @@
 import Assignment from "../../db/models/Assignment";
 import Testcase from "../../db/models/Testcase";
+import { paginate, paginateAggregate } from "../../shared/utils/pagination";
 import AssignmentTestcase from "../../db/models/AssignmentTestcase";
 import User from "../../db/models/User";
 
@@ -17,8 +18,8 @@ export async function getAdminSummary() {
     };
 }
 
-export async function getAllAssignmentsAdmin() {
-    return Assignment.find().sort({ createdAt: -1 }).lean();
+export async function getAllAssignmentsAdmin(page = 1, limit = 20) {
+    return paginate<any>(Assignment, {}, { page, limit, sort: { createdAt: -1 } });
 }
 
 export async function createAssignmentAdmin(data: any) {
@@ -48,9 +49,10 @@ export async function deleteAssignmentAdmin(id: string) {
     return deleted;
 }
 
-export async function getAllTestcasesAdmin() {
-    return Testcase.aggregate([
-        { $sort: { createdAt: -1 } },
+export async function getAllTestcasesAdmin(page = 1, limit = 20) {
+    const basePipeline = [{ $sort: { createdAt: -1 } }];
+
+    const postPaginationPipeline = [
         {
             $lookup: {
                 from: "assignmenttestcases",
@@ -79,8 +81,16 @@ export async function getAllTestcasesAdmin() {
             },
         },
         { $project: { _links: 0, _assignments: 0 } },
-    ]);
+    ];
+
+    return paginateAggregate<any>(
+        Testcase,
+        basePipeline,
+        postPaginationPipeline,
+        { page, limit }
+    );
 }
+
 
 export async function createTestcaseAdmin(data: any) {
     return Testcase.create(data);

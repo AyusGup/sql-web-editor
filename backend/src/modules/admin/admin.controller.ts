@@ -15,8 +15,10 @@ export const getSummary = async (req: Request, res: Response) => {
 
 export const listAssignments = async (req: Request, res: Response) => {
     try {
-        const list = await adminService.getAllAssignmentsAdmin();
-        responseHandler(res, true, 200, "Assignments fetched", list);
+        const page = Math.max(1, parseInt(req.query.page as string) || 1);
+        const limit = Math.min(100, Math.max(1, parseInt(req.query.limit as string) || 20));
+        const result = await adminService.getAllAssignmentsAdmin(page, limit);
+        responseHandler(res, true, 200, "Assignments fetched", result);
     } catch (error: any) {
         logger.error("Admin assignments fetch failed: %s", error.message);
         responseHandler(res, false, 500, "Failed to fetch assignments");
@@ -62,8 +64,10 @@ export const deleteAssignment = async (req: Request, res: Response) => {
 
 export const listTestcases = async (req: Request, res: Response) => {
     try {
-        const list = await adminService.getAllTestcasesAdmin();
-        responseHandler(res, true, 200, "Testcases fetched", list);
+        const page = Math.max(1, parseInt(req.query.page as string) || 1);
+        const limit = Math.min(100, Math.max(1, parseInt(req.query.limit as string) || 20));
+        const result = await adminService.getAllTestcasesAdmin(page, limit);
+        responseHandler(res, true, 200, "Testcases fetched", result);
     } catch (error: any) {
         logger.error("Admin testcases fetch failed: %s", error.message);
         responseHandler(res, false, 500, "Failed to fetch testcases");

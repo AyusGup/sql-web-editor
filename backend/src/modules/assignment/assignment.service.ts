@@ -2,6 +2,7 @@ import Assignment from "../../db/models/Assignment";
 import AssignmentTestcase from "../../db/models/AssignmentTestcase";
 import Testcase from "../../db/models/Testcase";
 import UserProgress from "../../db/models/UserProgress";
+import { paginate } from "../../shared/utils/pagination";
 
 export async function getAssignments({
   page = 1,
@@ -23,14 +24,14 @@ export async function getAssignments({
   if (difficulty) filter.difficulty = difficulty;
   if (tags?.length) filter.tags = { $in: tags };
 
-  const [data, total] = await Promise.all([
-    Assignment.find(filter)
-      .select("_id title difficulty tags createdAt")
-      .skip(skip)
-      .limit(limit)
-      .lean(),
-    Assignment.countDocuments(filter),
-  ]);
+  const result = await paginate<any>(Assignment, filter, {
+    page,
+    limit,
+    projection: "_id title difficulty tags createdAt",
+    sort: { createdAt: -1 }
+  });
+
+  const { data, total, totalPages } = result;
 
   let finalData: any[] = data;
   if (userId) {
@@ -55,7 +56,7 @@ export async function getAssignments({
       page,
       limit,
       total,
-      totalPages: Math.ceil(total / limit),
+      totalPages,
     },
   };
 }
