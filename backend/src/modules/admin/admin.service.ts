@@ -97,14 +97,26 @@ export async function searchAssignmentsAdmin(query: string) {
         .lean();
 }
 
-export async function linkTestcaseToAssignment(assignmentId: string, testcaseId: string) {
-    return AssignmentTestcase.findOneAndUpdate(
-        { assignmentId, testcaseId },
-        { assignmentId, testcaseId },
-        { upsert: true, new: true }
-    ).lean();
-}
+export async function syncTestcaseLinks(testcaseId: string, assignmentIds: string[]) {
+    const existing = await AssignmentTestcase.find({ testcaseId }).lean();
+    const existingIds = new Set(existing.map((l) => l.assignmentId.toString()));
+    const desiredIds = new Set(assignmentIds);
 
-export async function unlinkTestcaseFromAssignment(assignmentId: string, testcaseId: string) {
-    return AssignmentTestcase.findOneAndDelete({ assignmentId, testcaseId }).lean();
+    const toAdd = assignmentIds.filter((id) => !existingIds.has(id));
+    const toRemove = existing
+        .filter((l) => !desiredIds.has(l.assignmentId.toString()))
+        .map((l) => l._id);
+
+    await Promise.all([
+        toAdd.length > 0
+            ? AssignmentTestcase.insertMany(
+                toAdd.map((assignmentId) => ({ assignmentId, testcaseId }))
+            )
+            : Promise.resolve(),
+        toRemove.length > 0
+            ? AssignmentTestcase.deleteMany({ _id: { $in: toRemove } })
+            : Promise.resolve(),
+    ]);
+
+    return { added: toAdd.length, removed: toRemove.length };
 }

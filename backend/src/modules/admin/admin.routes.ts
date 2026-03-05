@@ -19,7 +19,6 @@ router.patch("/assignments/:id", adminController.updateAssignment);
 router.post("/testcases", adminController.createTestcase);
 router.patch("/testcases/:id", adminController.updateTestcase);
 
-router.post("/testcases/link", adminController.linkTestcase);
-router.delete("/testcases/unlink/:assignmentId/:testcaseId", adminController.unlinkTestcase);
+router.put("/testcases/:id/links", adminController.syncLinks);
 
 export default router;

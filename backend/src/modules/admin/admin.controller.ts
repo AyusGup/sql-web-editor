@@ -77,25 +77,18 @@ export const updateTestcase = async (req: Request, res: Response) => {
     }
 };
 
-export const linkTestcase = async (req: Request, res: Response) => {
-    const { assignmentId, testcaseId } = req.body;
+export const syncLinks = async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const { assignmentIds } = req.body;
     try {
-        const link = await adminService.linkTestcaseToAssignment(assignmentId, testcaseId);
-        responseHandler(res, true, 201, "Link established", link);
+        if (!Array.isArray(assignmentIds)) {
+            return responseHandler(res, false, 400, "assignmentIds must be an array");
+        }
+        const result = await adminService.syncTestcaseLinks(String(id), assignmentIds);
+        responseHandler(res, true, 200, "Links synced", result);
     } catch (error: any) {
-        logger.error("Admin link failure: %s", error.message);
-        responseHandler(res, false, 500, "Failed to link testcase");
-    }
-};
-
-export const unlinkTestcase = async (req: Request, res: Response) => {
-    const { assignmentId, testcaseId } = req.params;
-    try {
-        const link = await adminService.unlinkTestcaseFromAssignment(String(assignmentId), String(testcaseId));
-        responseHandler(res, true, 200, "Link removed", link);
-    } catch (error: any) {
-        logger.error("Admin unlink failure: %s", error.message);
-        responseHandler(res, false, 500, "Failed to unlink testcase");
+        logger.error("Admin sync links failure: %s", error.message);
+        responseHandler(res, false, 500, "Failed to sync links");
     }
 };
 
