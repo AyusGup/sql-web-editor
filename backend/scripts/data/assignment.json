@@ -11,19 +11,19 @@
             "columns": [
               {
                 "columnName": "id",
-                "dataType": "INTEGER"
+                "dataType": "INT"
               },
               {
                 "columnName": "name",
-                "dataType": "TEXT"
+                "dataType": "VARCHAR"
               },
               {
                 "columnName": "salary",
-                "dataType": "INTEGER"
+                "dataType": "INT"
               },
               {
                 "columnName": "department",
-                "dataType": "TEXT"
+                "dataType": "VARCHAR"
               }
             ],
             "rows": [
@@ -56,20 +56,41 @@
         ],
         "expectedOutput": {
           "type": "table",
-          "value": [
-            {
-              "id": 2,
-              "name": "Bob",
-              "salary": 60000,
-              "department": "Engineering"
-            },
-            {
-              "id": 3,
-              "name": "Charlie",
-              "salary": 75000,
-              "department": "Engineering"
-            }
-          ]
+          "value": {
+            "tableName": "Result",
+            "columns": [
+              {
+                "columnName": "id",
+                "dataType": "INT"
+              },
+              {
+                "columnName": "name",
+                "dataType": "VARCHAR"
+              },
+              {
+                "columnName": "salary",
+                "dataType": "FLOAT"
+              },
+              {
+                "columnName": "department",
+                "dataType": "VARCHAR"
+              }
+            ],
+            "rows": [
+              {
+                "id": 2,
+                "name": "Bob",
+                "salary": 60000,
+                "department": "Engineering"
+              },
+              {
+                "id": 3,
+                "name": "Charlie",
+                "salary": 75000,
+                "department": "Engineering"
+              }
+            ]
+          }
         },
         "visible": true
       },
@@ -80,19 +101,19 @@
             "columns": [
               {
                 "columnName": "id",
-                "dataType": "INTEGER"
+                "dataType": "INT"
               },
               {
                 "columnName": "name",
-                "dataType": "TEXT"
+                "dataType": "VARCHAR"
               },
               {
                 "columnName": "salary",
-                "dataType": "INTEGER"
+                "dataType": "INT"
               },
               {
                 "columnName": "department",
-                "dataType": "TEXT"
+                "dataType": "VARCHAR"
               }
             ],
             "rows": [
@@ -131,26 +152,47 @@
         ],
         "expectedOutput": {
           "type": "table",
-          "value": [
-            {
-              "id": 1,
-              "name": "Eve",
-              "salary": 52000,
-              "department": "Marketing"
-            },
-            {
-              "id": 3,
-              "name": "Grace",
-              "salary": 91000,
-              "department": "Engineering"
-            },
-            {
-              "id": 5,
-              "name": "Ivy",
-              "salary": 61000,
-              "department": "Engineering"
-            }
-          ]
+          "value": {
+            "tableName": "Result",
+            "columns": [
+              {
+                "columnName": "id",
+                "dataType": "INT"
+              },
+              {
+                "columnName": "name",
+                "dataType": "VARCHAR"
+              },
+              {
+                "columnName": "salary",
+                "dataType": "FLOAT"
+              },
+              {
+                "columnName": "department",
+                "dataType": "VARCHAR"
+              }
+            ],
+            "rows": [
+              {
+                "id": 1,
+                "name": "Eve",
+                "salary": 52000,
+                "department": "Marketing"
+              },
+              {
+                "id": 3,
+                "name": "Grace",
+                "salary": 91000,
+                "department": "Engineering"
+              },
+              {
+                "id": 5,
+                "name": "Ivy",
+                "salary": 61000,
+                "department": "Engineering"
+              }
+            ]
+          }
         },
         "visible": false
       }
@@ -170,15 +212,15 @@
             "columns": [
               {
                 "columnName": "id",
-                "dataType": "INTEGER"
+                "dataType": "INT"
               },
               {
                 "columnName": "name",
-                "dataType": "TEXT"
+                "dataType": "VARCHAR"
               },
               {
                 "columnName": "department",
-                "dataType": "TEXT"
+                "dataType": "VARCHAR"
               }
             ],
             "rows": [
@@ -212,20 +254,33 @@
         ],
         "expectedOutput": {
           "type": "table",
-          "value": [
-            {
-              "department": "HR",
-              "count": 1
-            },
-            {
-              "department": "Engineering",
-              "count": 2
-            },
-            {
-              "department": "Sales",
-              "count": 2
-            }
-          ]
+          "value": {
+            "tableName": "Result",
+            "columns": [
+              {
+                "columnName": "department",
+                "dataType": "VARCHAR"
+              },
+              {
+                "columnName": "count",
+                "dataType": "INT"
+              }
+            ],
+            "rows": [
+              {
+                "department": "HR",
+                "count": 1
+              },
+              {
+                "department": "Engineering",
+                "count": 2
+              },
+              {
+                "department": "Sales",
+                "count": 2
+              }
+            ]
+          }
         },
         "visible": true
       },
@@ -236,15 +291,15 @@
             "columns": [
               {
                 "columnName": "id",
-                "dataType": "INTEGER"
+                "dataType": "INT"
               },
               {
                 "columnName": "name",
-                "dataType": "TEXT"
+                "dataType": "VARCHAR"
               },
               {
                 "columnName": "department",
-                "dataType": "TEXT"
+                "dataType": "VARCHAR"
               }
             ],
             "rows": [
@@ -273,16 +328,29 @@
         ],
         "expectedOutput": {
           "type": "table",
-          "value": [
-            {
-              "department": "Finance",
-              "count": 3
-            },
-            {
-              "department": "Marketing",
-              "count": 1
-            }
-          ]
+          "value": {
+            "tableName": "Result",
+            "columns": [
+              {
+                "columnName": "department",
+                "dataType": "VARCHAR"
+              },
+              {
+                "columnName": "count",
+                "dataType": "INT"
+              }
+            ],
+            "rows": [
+              {
+                "department": "Finance",
+                "count": 3
+              },
+              {
+                "department": "Marketing",
+                "count": 1
+              }
+            ]
+          }
         },
         "visible": false
       }
@@ -302,11 +370,11 @@
             "columns": [
               {
                 "columnName": "id",
-                "dataType": "INTEGER"
+                "dataType": "INT"
               },
               {
                 "columnName": "name",
-                "dataType": "TEXT"
+                "dataType": "VARCHAR"
               }
             ],
             "rows": [
@@ -325,15 +393,15 @@
             "columns": [
               {
                 "columnName": "id",
-                "dataType": "INTEGER"
+                "dataType": "INT"
               },
               {
                 "columnName": "customer_id",
-                "dataType": "INTEGER"
+                "dataType": "INT"
               },
               {
                 "columnName": "amount",
-                "dataType": "REAL"
+                "dataType": "FLOAT"
               }
             ],
             "rows": [
@@ -345,28 +413,41 @@
               {
                 "id": 2,
                 "customer_id": 1,
-                "amount": 800.0
+                "amount": 800
               },
               {
                 "id": 3,
                 "customer_id": 2,
-                "amount": 1500.0
+                "amount": 1500
               }
             ]
           }
         ],
         "expectedOutput": {
           "type": "table",
-          "value": [
-            {
-              "name": "Aman",
-              "total_amount": 2000.5
-            },
-            {
-              "name": "Saurabh",
-              "total_amount": 1500.0
-            }
-          ]
+          "value": {
+            "tableName": "Result",
+            "columns": [
+              {
+                "columnName": "name",
+                "dataType": "VARCHAR"
+              },
+              {
+                "columnName": "total_amount",
+                "dataType": "FLOAT"
+              }
+            ],
+            "rows": [
+              {
+                "name": "Aman",
+                "total_amount": 2000.5
+              },
+              {
+                "name": "Saurabh",
+                "total_amount": 1500
+              }
+            ]
+          }
         },
         "visible": true
       },
@@ -377,11 +458,11 @@
             "columns": [
               {
                 "columnName": "id",
-                "dataType": "INTEGER"
+                "dataType": "INT"
               },
               {
                 "columnName": "name",
-                "dataType": "TEXT"
+                "dataType": "VARCHAR"
               }
             ],
             "rows": [
@@ -404,57 +485,70 @@
             "columns": [
               {
                 "columnName": "id",
-                "dataType": "INTEGER"
+                "dataType": "INT"
               },
               {
                 "columnName": "customer_id",
-                "dataType": "INTEGER"
+                "dataType": "INT"
               },
               {
                 "columnName": "amount",
-                "dataType": "REAL"
+                "dataType": "FLOAT"
               }
             ],
             "rows": [
               {
                 "id": 1,
                 "customer_id": 1,
-                "amount": 500.0
+                "amount": 500
               },
               {
                 "id": 2,
                 "customer_id": 2,
-                "amount": 300.0
+                "amount": 300
               },
               {
                 "id": 3,
                 "customer_id": 2,
-                "amount": 700.0
+                "amount": 700
               },
               {
                 "id": 4,
                 "customer_id": 3,
-                "amount": 2000.0
+                "amount": 2000
               }
             ]
           }
         ],
         "expectedOutput": {
           "type": "table",
-          "value": [
-            {
-              "name": "Ravi",
-              "total_amount": 500.0
-            },
-            {
-              "name": "Priya",
-              "total_amount": 1000.0
-            },
-            {
-              "name": "Kiran",
-              "total_amount": 2000.0
-            }
-          ]
+          "value": {
+            "tableName": "Result",
+            "columns": [
+              {
+                "columnName": "name",
+                "dataType": "VARCHAR"
+              },
+              {
+                "columnName": "total_amount",
+                "dataType": "FLOAT"
+              }
+            ],
+            "rows": [
+              {
+                "name": "Ravi",
+                "total_amount": 500
+              },
+              {
+                "name": "Priya",
+                "total_amount": 1000
+              },
+              {
+                "name": "Kiran",
+                "total_amount": 2000
+              }
+            ]
+          }
         },
         "visible": false
       }
@@ -474,15 +568,15 @@
             "columns": [
               {
                 "columnName": "id",
-                "dataType": "INTEGER"
+                "dataType": "INT"
               },
               {
                 "columnName": "name",
-                "dataType": "TEXT"
+                "dataType": "VARCHAR"
               },
               {
                 "columnName": "salary",
-                "dataType": "INTEGER"
+                "dataType": "INT"
               }
             ],
             "rows": [
@@ -506,18 +600,35 @@
         ],
         "expectedOutput": {
           "type": "table",
-          "value": [
-            {
-              "id": 2,
-              "name": "Bob",
-              "salary": 85000
-            },
-            {
-              "id": 3,
-              "name": "Charlie",
-              "salary": 85000
-            }
-          ]
+          "value": {
+            "tableName": "Result",
+            "columns": [
+              {
+                "columnName": "id",
+                "dataType": "INT"
+              },
+              {
+                "columnName": "name",
+                "dataType": "VARCHAR"
+              },
+              {
+                "columnName": "salary",
+                "dataType": "FLOAT"
+              }
+            ],
+            "rows": [
+              {
+                "id": 2,
+                "name": "Bob",
+                "salary": 85000
+              },
+              {
+                "id": 3,
+                "name": "Charlie",
+                "salary": 85000
+              }
+            ]
+          }
         },
         "visible": true
       },
@@ -528,15 +639,15 @@
             "columns": [
               {
                 "columnName": "id",
-                "dataType": "INTEGER"
+                "dataType": "INT"
               },
               {
                 "columnName": "name",
-                "dataType": "TEXT"
+                "dataType": "VARCHAR"
               },
               {
                 "columnName": "salary",
-                "dataType": "INTEGER"
+                "dataType": "INT"
               }
             ],
             "rows": [
@@ -565,18 +676,35 @@
         ],
         "expectedOutput": {
           "type": "table",
-          "value": [
-            {
-              "id": 1,
-              "name": "Dave",
-              "salary": 95000
-            },
-            {
-              "id": 4,
-              "name": "Grace",
-              "salary": 95000
-            }
-          ]
+          "value": {
+            "tableName": "Result",
+            "columns": [
+              {
+                "columnName": "id",
+                "dataType": "INT"
+              },
+              {
+                "columnName": "name",
+                "dataType": "VARCHAR"
+              },
+              {
+                "columnName": "salary",
+                "dataType": "FLOAT"
+              }
+            ],
+            "rows": [
+              {
+                "id": 1,
+                "name": "Dave",
+                "salary": 95000
+              },
+              {
+                "id": 4,
+                "name": "Grace",
+                "salary": 95000
+              }
+            ]
+          }
         },
         "visible": false
       }

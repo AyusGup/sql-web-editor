@@ -27,7 +27,9 @@ export function gradeResult(userRows: any[], expected: any) {
   return { correct: false, reason: "Unsupported grading" };
 }
 
-function gradeTable(userRows: any[], expectedRows: any[]) {
+function gradeTable(userRows: any[], expectedData: any) {
+  const expectedRows = Array.isArray(expectedData) ? expectedData : (expectedData?.rows || []);
+
   if (userRows.length !== expectedRows.length) {
     return {
       correct: false,
@@ -49,9 +51,9 @@ function gradeTable(userRows: any[], expectedRows: any[]) {
     rows.map((r) => JSON.stringify(normalizeRow(r))).sort();
 
   const user = normalize(userRows);
-  const expected = normalize(expectedRows);
+  const expectedNorm = normalize(expectedRows);
 
-  const correct = user.every((v, i) => v === expected[i]);
+  const correct = user.every((v, i) => v === expectedNorm[i]);
 
   return {
     correct,
