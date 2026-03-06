@@ -16,20 +16,6 @@ export async function listAdmins(page = 1, limit = 20) {
 }
 
 /**
- * Search for users to potentially promote to admin.
- */
-export async function searchUsers(query: string) {
-    if (!query || query.length < 2) return [];
-    return User.find({
-        username: { $regex: query, $options: "i" },
-        role: { $in: ["user", "admin"] }
-    })
-        .select("_id username role")
-        .limit(10)
-        .lean();
-}
-
-/**
  * Update a user's role.
  * Prevents demoting the last superadmin.
  */

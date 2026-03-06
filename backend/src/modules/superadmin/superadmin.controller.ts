@@ -15,17 +15,6 @@ export async function listAdmins(req: Request, res: Response) {
     }
 }
 
-export async function searchUsers(req: Request, res: Response) {
-    try {
-        const { q } = req.validatedQuery;
-        const users = await superAdminService.searchUsers(q);
-        res.json({ data: users });
-    } catch (error) {
-        logger.error("Error searching users:", error);
-        res.status(500).json({ error: "Failed to search users" });
-    }
-}
-
 export async function updateUserRole(req: Request, res: Response) {
     try {
         const { userId } = req.validatedParams;
