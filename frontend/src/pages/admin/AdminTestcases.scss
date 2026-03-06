@@ -1,0 +1,87 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.admin-page {
+    padding-top: $space-12;
+    padding-bottom: $space-12;
+}
+
+.page-header {
+    @include flex-between;
+    margin-bottom: $space-8;
+    margin-top: $space-12;
+
+    h1 {
+        margin-bottom: $space-1;
+    }
+
+    p {
+        color: $color-muted;
+        font-size: $fs-sm;
+    }
+}
+
+.admin-table-container {
+    position: relative;
+    background: $color-surface;
+    border-radius: $radius-lg;
+    border: 1px solid $color-border;
+    overflow: hidden;
+}
+
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+
+    th {
+        background: $color-surface-2;
+        padding: $space-4 $space-6;
+        font-size: $fs-xs;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: $color-muted;
+        font-weight: $fw-bold;
+        border-bottom: 1px solid $color-border;
+    }
+
+    td {
+        padding: $space-4 $space-6;
+        border-bottom: 1px solid $color-border;
+        font-size: $fs-sm;
+    }
+
+    tr:last-child td {
+        border-bottom: none;
+    }
+
+    .font-bold {
+        font-weight: $fw-bold;
+    }
+
+    .text-muted {
+        color: $color-muted;
+    }
+
+    .text-xs {
+        font-size: $fs-xs;
+    }
+
+    .font-mono {
+        font-family: 'JetBrains Mono', monospace;
+    }
+
+    .actions-cell {
+        display: flex;
+        gap: $space-2;
+    }
+}
+
+.loading-overlay {
+    @include flex-center;
+    position: absolute;
+    inset: 0;
+    background: rgba($color-bg, 0.5);
+    backdrop-filter: blur(4px);
+    z-index: 10;
+}

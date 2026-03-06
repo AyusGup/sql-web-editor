@@ -5,6 +5,7 @@ import { useAppDispatch } from '../../hooks/useRedux'
 import { useAuth } from '../../hooks/useAuth'
 import { loginThunk, clearError } from '../../features/auth/authSlice'
 import { ROUTES } from '../../constants/routes'
+import Footer from '../../components/common/Footer'
 import './AuthPage.scss'
 
 export default function LoginPage() {
@@ -71,6 +72,7 @@ export default function LoginPage() {
                     <Link to={ROUTES.REGISTER}>Create one</Link>
                 </div>
             </div>
+            <Footer />
         </div>
     )
 }

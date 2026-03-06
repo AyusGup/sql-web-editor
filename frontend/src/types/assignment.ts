@@ -16,11 +16,26 @@ export interface ExpectedOutput {
     value: unknown
 }
 
+export interface LinkedAssignment {
+    _id: string
+    title: string
+}
+
 export interface Testcase {
     _id: string
     sampleTables: SampleTable[]
     expectedOutput: ExpectedOutput
     visible: boolean
+    version: number
+    linkedAssignments: LinkedAssignment[]
+    createdAt: string
+    updatedAt: string
+}
+
+export interface SearchedAssignment {
+    _id: string
+    title: string
+    difficulty: Difficulty
 }
 
 export interface Assignment {
@@ -30,7 +45,9 @@ export interface Assignment {
     question: string
     testcases: Testcase[]
     tags: string[]
+    version: number
     createdAt: string
+    updatedAt: string
 }
 
 export interface UserProgress {
@@ -66,3 +83,10 @@ export interface AssignmentListItem {
     createdAt: string
     isCompleted?: boolean
 }
+
+// Admin DTOs
+export type CreateAssignmentDTO = Omit<Assignment, '_id' | 'testcases' | 'createdAt' | 'updatedAt' | 'version'>
+export type UpdateAssignmentDTO = Partial<CreateAssignmentDTO> & { version?: number }
+
+export type CreateTestcaseDTO = Omit<Testcase, '_id' | 'createdAt' | 'updatedAt' | 'linkedAssignments' | 'version'>
+export type UpdateTestcaseDTO = Partial<CreateTestcaseDTO> & { version?: number }

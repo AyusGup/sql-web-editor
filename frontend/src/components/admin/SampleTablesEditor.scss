@@ -1,0 +1,40 @@
+@use '../../styles/variables' as *;
+
+.sample-tables-editor {
+    display: flex;
+    flex-direction: column;
+    gap: $space-4;
+
+    &__label {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-size: $fs-sm;
+        font-weight: $fw-semibold;
+        color: $color-muted;
+    }
+
+    &__count {
+        font-weight: $fw-normal;
+        font-size: $fs-xs;
+        color: rgba($color-muted, 0.7);
+    }
+}
+
+.btn-add-table {
+    background: none;
+    border: 2px dashed $color-border;
+    color: $color-muted;
+    padding: $space-4;
+    border-radius: $radius-md;
+    font-size: $fs-sm;
+    font-weight: $fw-medium;
+    cursor: pointer;
+    transition: all $t-fast;
+
+    &:hover {
+        border-color: $color-primary;
+        color: $color-primary;
+        background: rgba($color-primary, 0.05);
+    }
+}

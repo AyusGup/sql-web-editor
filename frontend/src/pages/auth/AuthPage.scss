@@ -2,13 +2,23 @@
 @use '../../styles/mixins' as *;
 
 .auth-page {
-    @include flex-center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
     min-height: 100vh;
     padding: $space-3;
     background: $color-bg;
 
     @include respond-to(xs) {
         padding: $space-4;
+    }
+
+    .footer {
+        width: 100%;
+        background: transparent;
+        border-top: none;
+        margin-top: $space-8;
     }
 }
 

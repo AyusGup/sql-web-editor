@@ -1,0 +1,251 @@
+@use '../../styles/variables' as *;
+
+.table-editor {
+    border: 1px solid $color-border;
+    border-radius: $radius-md;
+    background: $color-surface-2;
+    padding: $space-4;
+    margin-bottom: $space-4;
+
+    &__header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: $space-4;
+        margin-bottom: $space-4;
+    }
+
+    &__name {
+        background: $color-surface;
+        border: 1px solid $color-border;
+        border-radius: $radius-sm;
+        padding: $space-2 $space-3;
+        color: $color-text;
+        font-weight: $fw-semibold;
+        font-size: $fs-sm;
+        flex: 1;
+        max-width: 280px;
+
+        &:focus {
+            outline: none;
+            border-color: $color-primary;
+        }
+    }
+
+    &__grid-wrapper {
+        overflow-x: auto;
+        margin-bottom: $space-3;
+    }
+
+    &__grid {
+        border-collapse: collapse;
+        width: 100%;
+        min-width: max-content;
+
+        th,
+        td {
+            border: 1px solid $color-border;
+            padding: 0;
+            vertical-align: top;
+        }
+
+        th {
+            background: rgba($color-primary, 0.08);
+        }
+    }
+
+    &__row-num {
+        width: 44px;
+        min-width: 44px;
+        text-align: center;
+        color: $color-muted;
+        font-size: $fs-xs;
+        position: relative;
+
+        span {
+            display: block;
+            padding: $space-2;
+        }
+    }
+
+    &__row-remove {
+        display: none;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: rgba($color-danger, 0.15);
+        color: $color-danger;
+        border: none;
+        border-radius: $radius-sm;
+        cursor: pointer;
+        font-size: $fs-xs;
+        width: 20px;
+        height: 20px;
+        line-height: 1;
+        padding: 0;
+    }
+
+    &__row-num:hover {
+        span {
+            opacity: 0;
+        }
+
+        .table-editor__row-remove {
+            display: block;
+        }
+    }
+
+    &__col-header {
+        min-width: 140px;
+        padding: $space-2 !important;
+
+        display: flex;
+        flex-direction: column;
+        gap: $space-1;
+        position: relative;
+    }
+
+    &__col-name {
+        background: transparent;
+        border: 1px solid transparent;
+        color: $color-text;
+        font-weight: $fw-semibold;
+        font-size: $fs-xs;
+        padding: $space-1 $space-2;
+        border-radius: $radius-sm;
+        width: 100%;
+
+        &:focus {
+            border-color: $color-primary;
+            outline: none;
+            background: $color-surface;
+        }
+    }
+
+    &__col-type {
+        background: $color-surface;
+        border: 1px solid $color-border;
+        color: $color-muted;
+        font-size: 10px;
+        padding: 2px $space-1;
+        border-radius: $radius-sm;
+        cursor: pointer;
+        width: 100%;
+
+        &:focus {
+            outline: none;
+            border-color: $color-primary;
+        }
+    }
+
+    &__col-remove {
+        position: absolute;
+        top: 2px;
+        right: 2px;
+        background: none;
+        border: none;
+        color: $color-muted;
+        cursor: pointer;
+        font-size: 10px;
+        opacity: 0;
+        transition: opacity $t-fast;
+        padding: 2px;
+        line-height: 1;
+
+        &:hover {
+            color: $color-danger;
+        }
+    }
+
+    &__col-header:hover &__col-remove {
+        opacity: 1;
+    }
+
+    &__add-col {
+        width: 36px;
+        min-width: 36px;
+        border: none !important;
+        background: transparent !important;
+    }
+
+    &__cell {
+        input {
+            background: transparent;
+            border: none;
+            color: $color-text;
+            font-size: $fs-xs;
+            font-family: $font-mono;
+            padding: $space-2 $space-3;
+            width: 100%;
+            min-width: 100px;
+
+            &:focus {
+                outline: none;
+                background: rgba($color-primary, 0.05);
+            }
+
+            &::placeholder {
+                color: rgba($color-muted, 0.4);
+                font-family: $font-sans;
+                font-style: italic;
+            }
+        }
+
+        &.cell-error {
+            background: rgba($color-danger, 0.08);
+
+            input {
+                color: $color-danger;
+            }
+        }
+    }
+}
+
+.cell-error-msg {
+    display: block;
+    font-size: 9px;
+    color: $color-danger;
+    padding: 0 $space-3 $space-1;
+    white-space: nowrap;
+}
+
+.btn-add {
+    background: none;
+    border: 1px dashed $color-border;
+    color: $color-muted;
+    cursor: pointer;
+    width: 28px;
+    height: 28px;
+    border-radius: $radius-sm;
+    font-size: $fs-lg;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all $t-fast;
+
+    &:hover {
+        border-color: $color-primary;
+        color: $color-primary;
+        background: rgba($color-primary, 0.1);
+    }
+}
+
+.btn-add-row {
+    background: none;
+    border: 1px dashed $color-border;
+    color: $color-muted;
+    cursor: pointer;
+    width: 100%;
+    padding: $space-2;
+    border-radius: $radius-sm;
+    font-size: $fs-xs;
+    transition: all $t-fast;
+
+    &:hover {
+        border-color: $color-primary;
+        color: $color-primary;
+        background: rgba($color-primary, 0.05);
+    }
+}

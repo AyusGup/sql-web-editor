@@ -58,7 +58,7 @@ export const getHintThunk = createAsyncThunk(
     ) => {
         try {
             const res = await hintApi.get(problemId, userQuery)
-            return res.data.data.hint as string
+            return res.data.data as string
         } catch (err: unknown) {
             const e = err as { response?: { status?: number; data?: { message?: string } } }
             if (e.response?.status === 429) return rejectWithValue('Rate limit reached. Please wait.')

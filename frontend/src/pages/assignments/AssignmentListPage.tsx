@@ -6,6 +6,7 @@ import { QUERY } from '../../constants/query'
 import type { Difficulty } from '../../constants/query'
 import AssignmentCard from '../../components/assignments/AssignmentCard'
 import FilterBar from '../../components/assignments/FilterBar'
+import Pagination from '../../components/common/Pagination'
 import './AssignmentListPage.scss'
 
 export default function AssignmentListPage() {
@@ -59,25 +60,13 @@ export default function AssignmentListPage() {
                     </div>
                 )}
 
-                {pagination && pagination.totalPages > 1 && (
-                    <div className="list-pagination">
-                        <button
-                            className="btn btn-ghost btn-sm"
-                            disabled={page <= 1}
-                            onClick={() => setPage((p) => p - 1)}
-                        >
-                            Prev
-                        </button>
-                        <span className="list-page-info">{page} / {pagination.totalPages}</span>
-                        <button
-                            className="btn btn-ghost btn-sm"
-                            disabled={page >= pagination.totalPages}
-                            onClick={() => setPage((p) => p + 1)}
-                        >
-                            Next
-                        </button>
-                    </div>
-                )}
+                <Pagination
+                    currentPage={page}
+                    totalPages={pagination?.totalPages || 0}
+                    onPageChange={setPage}
+                    loading={loading}
+                    className="list-pagination"
+                />
             </main>
         </div>
     )

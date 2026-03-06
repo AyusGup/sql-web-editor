@@ -3,8 +3,9 @@ import type { FormEvent } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAppDispatch } from '../../hooks/useRedux'
 import { useAuth } from '../../hooks/useAuth'
-import { registerThunk, clearError } from '../../features/auth/authSlice'
+import { clearError, registerThunk } from '../../features/auth/authSlice'
 import { ROUTES } from '../../constants/routes'
+import Footer from '../../components/common/Footer'
 import './AuthPage.scss'
 
 export default function RegisterPage() {
@@ -71,6 +72,7 @@ export default function RegisterPage() {
                     <Link to={ROUTES.LOGIN}>Sign in</Link>
                 </div>
             </div>
+            <Footer />
         </div>
     )
 }

@@ -1,0 +1,67 @@
+@use 'variables' as *;
+
+.text-muted {
+    color: $color-muted;
+}
+
+.text-danger {
+    color: $color-danger;
+}
+
+.font-bold {
+    font-weight: $fw-bold;
+}
+
+.flex {
+    display: flex;
+}
+
+.flex-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.flex-between {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.flex-end {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.gap-1 {
+    gap: $space-1;
+}
+
+.gap-2 {
+    gap: $space-2;
+}
+
+.gap-3 {
+    gap: $space-3;
+}
+
+.gap-4 {
+    gap: $space-4;
+}
+
+.pagination-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: $space-3;
+    margin-top: $space-4;
+    padding: $space-2 0;
+
+    &__info {
+        font-size: 0.85rem;
+        color: $color-muted;
+        min-width: 110px;
+        text-align: center;
+    }
+}

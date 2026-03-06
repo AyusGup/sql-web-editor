@@ -30,7 +30,15 @@ A full-stack web application designed for interactive SQL practice, complete wit
 ### Database Architecture
 *   **MongoDB (Primary Store):** Flexible NoSQL architecture specifically advantageous for modeling nested SQL Assignment logic, tags parameters, and storing highly-variable user-execution progress metrics reliably.
 *   **PostgreSQL (Sandbox Runner):** Acts completely autonomously as our query-testing platform. Temporary schemas are generated continuously isolating multi-user SQL queries against the exact environments required avoiding persistence clashes. We employ a strict **Dual-User Strategy** where structural environments are crafted using an administrative pool, but user-queries execute explicitly via a locked-down `runner` role lacking superuser privileges. Additionally, it securely utilizes a **transactional rollback strategy** (`BEGIN` ... `ROLLBACK`) to guarantee that potentially destructive user queries never mutate the underlying database state permanently.
-*   **Redis:** High-performance, in-memory caching specifically leveraging asynchronous data cues. We leverage **custom Lua scripts** directly within Redis to execute complex, atomic operations (like robust rate-limiting and messaging) guaranteeing zero race conditions. 
+*   **Redis:** High-performance, in-memory caching specifically leveraging asynchronous data cues. We leverage **custom Lua scripts** directly within Redis to execute complex, atomic operations (like robust rate-limiting and messaging) guaranteeing zero race conditions.
+
+### Admin Panel: Optimistic Concurrency Control (OCC)
+To prevent the **Lost Update Problem** when multiple admins edit the same Assignment or Testcase simultaneously, the admin panel uses **Optimistic Concurrency Control**:
+*   Every `Assignment` and `Testcase` document carries a `version: number` field (incremented on each successful write).
+*   When an admin saves an edit, the current `version` is sent alongside the update payload.
+*   The backend performs a version-conditional update: `findOneAndUpdate({ _id, version })`. If no document matches (because another admin already incremented the version), the server returns `HTTP 409 Conflict`.
+*   The frontend catches the `409` and shows a toast: *"This record was modified by another admin. Please close and reopen to get the latest version."*
+*   Creates, deletes, reads, and user autosave operations are not affected — they are either naturally atomic or user-scoped.
 
 ### Worker Infrastructure (Background Processes)
 *   **BullMQ:** Maps a high-performance messaging-queue mapping cleanup executions asynchronously targeting our PostgreSQL engine. We chose BullMQ over traditional `cron` jobs because it provides robust distributed job tracking, built-in retry mechanisms, active concurrency control, and seamless Redis integration—vital assurances that standard cron utilities lack when scaling across concurrent microservices.

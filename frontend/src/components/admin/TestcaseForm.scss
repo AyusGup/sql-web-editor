@@ -1,0 +1,99 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.admin-form {
+    display: flex;
+    flex-direction: column;
+    gap: $space-6;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: $space-2;
+
+    label {
+        font-size: $fs-sm;
+        font-weight: $fw-semibold;
+        color: $color-muted;
+    }
+
+    .form-help {
+        font-size: $fs-xs;
+        color: $color-muted;
+        margin-bottom: $space-1;
+    }
+
+    input:not([type="checkbox"]),
+    textarea,
+    select {
+        background: $color-surface-2;
+        border: 1px solid $color-border;
+        border-radius: $radius-md;
+        padding: $space-3 $space-4;
+        color: $color-text;
+        font-family: inherit;
+        font-size: $fs-sm;
+        transition: $t-normal;
+
+        &:focus {
+            outline: none;
+            border-color: $color-primary;
+            box-shadow: 0 0 0 2px rgba($color-primary, 0.2);
+        }
+    }
+
+    &.checkbox-group {
+        flex-direction: row;
+        align-items: center;
+        gap: $space-3;
+
+        input {
+            width: $space-4;
+            height: $space-4;
+        }
+
+        label {
+            margin: 0;
+            cursor: pointer;
+        }
+    }
+
+    textarea {
+        resize: vertical;
+    }
+
+    .font-mono {
+        font-family: 'JetBrains Mono', monospace;
+    }
+
+    .text-xs {
+        font-size: $fs-xs;
+    }
+}
+
+.alert {
+    padding: $space-4 $space-6;
+    border-radius: $radius-md;
+    font-size: $fs-sm;
+    font-weight: $fw-semibold;
+
+    &-error {
+        background: rgba($color-danger, 0.1);
+        color: $color-danger;
+        border: 1px solid rgba($color-danger, 0.2);
+    }
+}
+
+.flex-end {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.gap-3 {
+    gap: $space-3;
+}
+
+.mt-8 {
+    margin-top: $space-8;
+}

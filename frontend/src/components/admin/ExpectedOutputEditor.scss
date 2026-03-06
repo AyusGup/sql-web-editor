@@ -1,0 +1,175 @@
+@use '../../styles/variables' as *;
+
+.expected-output-editor {
+    display: flex;
+    flex-direction: column;
+    gap: $space-3;
+
+    &__header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        label {
+            font-size: $fs-sm;
+            font-weight: $fw-semibold;
+            color: $color-muted;
+        }
+    }
+
+    &__controls {
+        display: flex;
+        align-items: center;
+        gap: $space-2;
+    }
+
+    &__type-select {
+        background: $color-surface-2;
+        border: 1px solid $color-border;
+        color: $color-text;
+        font-size: $fs-xs;
+        padding: $space-1 $space-2;
+        border-radius: $radius-sm;
+        cursor: pointer;
+
+        &:focus {
+            outline: none;
+            border-color: $color-primary;
+        }
+    }
+
+    &__json {
+        textarea {
+            width: 100%;
+            background: $color-surface-2;
+            border: 1px solid $color-border;
+            border-radius: $radius-md;
+            padding: $space-3;
+            color: $color-text;
+            font-family: $font-mono;
+            font-size: $fs-xs;
+            resize: vertical;
+
+            &:focus {
+                outline: none;
+                border-color: $color-primary;
+            }
+        }
+    }
+
+    &__error {
+        color: $color-danger;
+        font-size: $fs-xs;
+    }
+}
+
+.expected-single-input {
+    background: $color-surface-2;
+    border: 1px solid $color-border;
+    border-radius: $radius-md;
+    padding: $space-3 $space-4;
+    color: $color-text;
+    font-size: $fs-sm;
+    width: 100%;
+
+    &:focus {
+        outline: none;
+        border-color: $color-primary;
+    }
+}
+
+.expected-table-editor {
+    &__grid-wrapper {
+        overflow-x: auto;
+    }
+
+    &__grid {
+        border-collapse: collapse;
+        width: 100%;
+
+        th,
+        td {
+            border: 1px solid $color-border;
+            padding: $space-1 $space-2;
+            font-size: $fs-xs;
+        }
+
+        th {
+            background: rgba($color-primary, 0.08);
+            color: $color-text;
+            font-weight: $fw-semibold;
+        }
+
+        input {
+            background: transparent;
+            border: none;
+            color: $color-text;
+            font-family: $font-mono;
+            font-size: $fs-xs;
+            padding: $space-1;
+            width: 100%;
+
+            &:focus {
+                outline: none;
+                background: rgba($color-primary, 0.05);
+            }
+        }
+    }
+
+    &__row-num {
+        width: 36px;
+        text-align: center;
+        color: $color-muted;
+        position: relative;
+
+        &:hover {
+            span {
+                opacity: 0;
+            }
+
+            .table-editor__row-remove {
+                display: block;
+            }
+        }
+    }
+}
+
+.expected-column-editor {
+    display: flex;
+    flex-direction: column;
+    gap: $space-2;
+
+    &__item {
+        display: flex;
+        gap: $space-2;
+        align-items: center;
+
+        input {
+            flex: 1;
+            background: $color-surface-2;
+            border: 1px solid $color-border;
+            border-radius: $radius-sm;
+            padding: $space-2 $space-3;
+            color: $color-text;
+            font-size: $fs-xs;
+
+            &:focus {
+                outline: none;
+                border-color: $color-primary;
+            }
+        }
+    }
+}
+
+.btn-remove-item {
+    background: none;
+    border: none;
+    color: $color-muted;
+    cursor: pointer;
+    font-size: $fs-xs;
+    padding: $space-1;
+
+    &:hover {
+        color: $color-danger;
+    }
+}

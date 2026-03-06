@@ -18,4 +18,15 @@ export const API_ROUTES = {
     HINT: {
         GET: `${BASE}/hint`,
     },
-} as const
+    ADMIN: {
+        BASE: `${BASE}/admin`,
+        SUMMARY: `${BASE}/admin/summary`,
+        USERS: `${BASE}/admin/users`,
+        SEARCH_USERS: `${BASE}/admin/users/search`,
+        ASSIGNMENTS: `${BASE}/admin/assignments`,
+        SEARCH_ASSIGNMENTS: `${BASE}/admin/assignments/search`,
+        TESTCASES: `${BASE}/admin/testcases`,
+        SYNC_LINKS: (testcaseId: string) =>
+            `${BASE}/admin/testcases/${testcaseId}/links`,
+    },
+} as const;

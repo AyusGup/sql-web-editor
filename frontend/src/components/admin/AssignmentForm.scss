@@ -1,0 +1,95 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.admin-form {
+    display: flex;
+    flex-direction: column;
+    gap: $space-6;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: $space-2;
+
+    label {
+        font-size: $fs-sm;
+        font-weight: $fw-semibold;
+        color: $color-muted;
+    }
+
+    input[type="text"],
+    textarea,
+    select {
+        background: $color-surface-2;
+        border: 1px solid $color-border;
+        border-radius: $radius-md;
+        padding: $space-3 $space-4;
+        color: $color-text;
+        font-family: inherit;
+        font-size: $fs-sm;
+        transition: $t-normal;
+
+        &:focus {
+            outline: none;
+            border-color: $color-primary;
+            box-shadow: 0 0 0 2px rgba($color-primary, 0.2);
+        }
+    }
+
+    textarea {
+        resize: vertical;
+    }
+}
+
+.tag-input-wrapper {
+    display: flex;
+    gap: $space-2;
+
+    input {
+        flex: 1;
+    }
+}
+
+.tag-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $space-2;
+    margin-top: $space-2;
+
+    .badge-tag {
+        display: inline-flex;
+        align-items: center;
+        gap: $space-2;
+        padding: $space-1 $space-3;
+        background: $color-surface-2;
+        color: $color-primary;
+
+        button {
+            background: none;
+            border: none;
+            color: $color-muted;
+            cursor: pointer;
+            font-size: $fs-lg;
+            line-height: 1;
+            padding: 0;
+
+            &:hover {
+                color: $color-danger;
+            }
+        }
+    }
+}
+
+.flex-end {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.gap-3 {
+    gap: $space-3;
+}
+
+.mt-8 {
+    margin-top: $space-8;
+}
