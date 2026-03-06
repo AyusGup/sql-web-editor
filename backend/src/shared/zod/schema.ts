@@ -57,6 +57,12 @@ export const userSearchSchema = z.object({
   q: z.string({ message: "Search query must be string" }).min(2, "Search query must be at least 2 characters")
 });
 
+export const userPaginationSchema = z.object({
+  page: z.string().optional().default("1"),
+  limit: z.string().optional().default("10"),
+  q: z.string().optional(),
+});
+
 export const userIdParamSchema = z.object({
   userId: objectId,
 });

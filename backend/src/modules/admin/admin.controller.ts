@@ -13,6 +13,20 @@ export const getSummary = async (req: Request, res: Response) => {
     }
 };
 
+export const listUsers = async (req: Request, res: Response) => {
+    try {
+        const page = Math.max(1, parseInt(req.validatedQuery.page) || 1);
+        const limit = Math.min(100, Math.max(1, parseInt(req.validatedQuery.limit) || 20));
+        const q = req.validatedQuery.q;
+
+        const result = await adminService.getUsersAdmin(page, limit, q);
+        responseHandler(res, true, 200, "Users fetched", result);
+    } catch (error: any) {
+        logger.error("Admin users fetch failed: %s", error.message);
+        responseHandler(res, false, 500, "Failed to fetch users");
+    }
+};
+
 export const listAssignments = async (req: Request, res: Response) => {
     try {
         const page = Math.max(1, parseInt(req.validatedQuery.page) || 1);

@@ -19,6 +19,7 @@ services:
         condition: service_healthy  
     volumes:
       - shared_logs:/app/logs
+    command: sh -c "node dist/scripts/init-superadmin.js && node dist/index.js"
     restart: always
   cleanup:
     build:

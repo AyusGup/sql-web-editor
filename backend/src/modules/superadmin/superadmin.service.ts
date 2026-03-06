@@ -1,13 +1,22 @@
 import User from "../../db/models/User";
+import { paginate } from "../../shared/utils/pagination";
 
 /**
- * List all users with admin or superadmin roles.
+ * List all users with admin roles.
  */
-export async function listAdmins() {
-    return User.find({ role: { $in: ["admin"] } })
-        .select("_id username role createdAt")
-        .sort({ createdAt: -1 })
-        .lean();
+export async function listAdmins(page = 1, limit = 20, search?: string) {
+    const filter: any = { role: { $in: ["admin"] } };
+
+    if (search && search.trim().length >= 2) {
+        filter.username = { $regex: search.trim().replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), $options: "i" };
+    }
+
+    return paginate<any>(User, filter, {
+        page,
+        limit,
+        sort: { createdAt: -1 },
+        projection: "-password"
+    });
 }
 
 /**
@@ -31,7 +40,7 @@ export async function searchUsers(query: string) {
 export async function updateUserRole(userId: string, newRole: "user" | "admin" | "superadmin") {
     const user = await User.findById(userId);
     if (!user) throw new Error("USER_NOT_FOUND");
-    if(newRole === "superadmin") throw new Error("CANNOT_PROMOTE_TO_SUPERADMIN");
+    if (newRole === "superadmin") throw new Error("CANNOT_PROMOTE_TO_SUPERADMIN");
 
     user.role = newRole;
     await user.save();

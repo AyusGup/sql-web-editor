@@ -18,6 +18,20 @@ export async function getAdminSummary() {
     };
 }
 
+export async function getUsersAdmin(page = 1, limit = 20, search?: string) {
+    const filter: any = {};
+    if (search && search.trim().length >= 2) {
+        filter.username = { $regex: search.trim().replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), $options: "i" };
+    }
+
+    return paginate<any>(User, filter, {
+        page,
+        limit,
+        sort: { createdAt: -1 },
+        projection: "-password"
+    });
+}
+
 export async function getAllAssignmentsAdmin(page = 1, limit = 20) {
     return paginate<any>(Assignment, {}, { page, limit, sort: { createdAt: -1 } });
 }

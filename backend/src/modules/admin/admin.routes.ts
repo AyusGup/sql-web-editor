@@ -10,7 +10,8 @@ import {
     testcaseBodySchema,
     testcaseUpdateSchema,
     syncLinksSchema,
-    userSearchSchema
+    userSearchSchema,
+    userPaginationSchema
 } from "../../shared/zod/schema";
 
 const router = Router();
@@ -19,6 +20,8 @@ const router = Router();
 router.use(protect, authorize("admin"));
 
 router.get("/summary", adminController.getSummary);
+
+router.get("/users", validateQueryParams(userPaginationSchema), adminController.listUsers);
 
 router.get("/assignments", validateQueryParams(paginationQuerySchema), adminController.listAssignments);
 router.get("/assignments/search", validateQueryParams(userSearchSchema), adminController.searchAssignments);

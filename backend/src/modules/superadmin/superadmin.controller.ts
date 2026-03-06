@@ -4,7 +4,11 @@ import logger from "../../shared/logger";
 
 export async function listAdmins(req: Request, res: Response) {
     try {
-        const admins = await superAdminService.listAdmins();
+        const page = Math.max(1, parseInt(req.validatedQuery.page) || 1);
+        const limit = Math.min(100, Math.max(1, parseInt(req.validatedQuery.limit) || 20));
+        const q = req.validatedQuery.q;
+
+        const admins = await superAdminService.listAdmins(page, limit, q);
         res.json({ data: admins });
     } catch (error) {
         logger.error("Error listing admins:", error);
