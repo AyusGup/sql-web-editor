@@ -1,10 +1,11 @@
 import User from "../../db/models/User";
 import { paginate } from "../../shared/utils/pagination";
+import { PAGINATION_LIMITS } from "../../shared/constants";
 
 /**
  * List all users with admin roles.
  */
-export async function listAdmins(page = 1, limit = 20) {
+export async function listAdmins(page = 1, limit: number = PAGINATION_LIMITS.ADMIN) {
     const filter: any = { role: { $in: ["admin"] } };
 
     return paginate<any>(User, filter, {

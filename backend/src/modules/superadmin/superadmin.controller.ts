@@ -1,11 +1,12 @@
 import { Request, Response } from "express";
 import * as superAdminService from "./superadmin.service";
 import logger from "../../shared/logger";
+import { PAGINATION_LIMITS } from "../../shared/constants";
 
 export async function listAdmins(req: Request, res: Response) {
     try {
-        const page = Math.max(1, parseInt(req.validatedQuery.page) || 1);
-        const limit = Math.min(100, Math.max(1, parseInt(req.validatedQuery.limit) || 20));
+        const page = Math.max(1, parseInt(req.validatedQuery.page as string) || 1);
+        const limit = Math.min(PAGINATION_LIMITS.MAX, Math.max(1, parseInt(req.validatedQuery.limit as string) || PAGINATION_LIMITS.ADMIN));
 
         const admins = await superAdminService.listAdmins(page, limit);
         res.json({ data: admins });

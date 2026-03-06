@@ -3,10 +3,11 @@ import AssignmentTestcase from "../../db/models/AssignmentTestcase";
 import Testcase from "../../db/models/Testcase";
 import UserProgress from "../../db/models/UserProgress";
 import { paginate } from "../../shared/utils/pagination";
+import { PAGINATION_LIMITS } from "../../shared/constants";
 
 export async function getAssignments({
   page = 1,
-  limit = 10,
+  limit = PAGINATION_LIMITS.DEFAULT,
   difficulty,
   tags,
   userId,

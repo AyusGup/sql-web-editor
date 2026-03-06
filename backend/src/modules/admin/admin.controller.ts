@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import * as adminService from "./admin.service";
 import { responseHandler } from "../../shared/response";
 import logger from "../../shared/logger";
+import { PAGINATION_LIMITS } from "../../shared/constants";
 
 export const getSummary = async (req: Request, res: Response) => {
     try {
@@ -15,8 +16,8 @@ export const getSummary = async (req: Request, res: Response) => {
 
 export const listUsers = async (req: Request, res: Response) => {
     try {
-        const page = Math.max(1, parseInt(req.validatedQuery.page) || 1);
-        const limit = Math.min(100, Math.max(1, parseInt(req.validatedQuery.limit) || 20));
+        const page = Math.max(1, parseInt(req.validatedQuery.page as string) || 1);
+        const limit = Math.min(PAGINATION_LIMITS.MAX, Math.max(1, parseInt(req.validatedQuery.limit as string) || PAGINATION_LIMITS.ADMIN));
 
         const result = await adminService.getUsersAdmin(page, limit);
         responseHandler(res, true, 200, "Users fetched", result);
@@ -39,8 +40,8 @@ export const searchUsers = async (req: Request, res: Response) => {
 
 export const listAssignments = async (req: Request, res: Response) => {
     try {
-        const page = Math.max(1, parseInt(req.validatedQuery.page) || 1);
-        const limit = Math.min(100, Math.max(1, parseInt(req.validatedQuery.limit) || 20));
+        const page = Math.max(1, parseInt(req.validatedQuery.page as string) || 1);
+        const limit = Math.min(PAGINATION_LIMITS.MAX, Math.max(1, parseInt(req.validatedQuery.limit as string) || PAGINATION_LIMITS.ADMIN));
         const result = await adminService.getAllAssignmentsAdmin(page, limit);
         responseHandler(res, true, 200, "Assignments fetched", result);
     } catch (error: any) {
@@ -99,8 +100,8 @@ export const deleteAssignment = async (req: Request, res: Response) => {
 
 export const listTestcases = async (req: Request, res: Response) => {
     try {
-        const page = Math.max(1, parseInt(req.validatedQuery.page) || 1);
-        const limit = Math.min(100, Math.max(1, parseInt(req.validatedQuery.limit) || 20));
+        const page = Math.max(1, parseInt(req.validatedQuery.page as string) || 1);
+        const limit = Math.min(PAGINATION_LIMITS.MAX, Math.max(1, parseInt(req.validatedQuery.limit as string) || PAGINATION_LIMITS.ADMIN));
         const result = await adminService.getAllTestcasesAdmin(page, limit);
         responseHandler(res, true, 200, "Testcases fetched", result);
     } catch (error: any) {

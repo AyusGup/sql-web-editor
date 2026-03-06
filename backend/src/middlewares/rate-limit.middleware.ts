@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { getRedis } from "../db/config/redis";
-import { WINDOW, USER_LIMIT, GLOBAL_LIMIT } from "../shared/constants";
+import { WINDOW, RATE_LIMITS } from "../shared/constants";
 import { slidingLimiter } from "../utils/helper";
 import { responseHandler } from "../shared/response";
 
@@ -13,7 +13,7 @@ export async function rateLimiter(req: Request, res: Response, next: NextFunctio
   const userAllowed = await slidingLimiter(
     redis,
     `rate:user:${userId}`,
-    USER_LIMIT,
+    RATE_LIMITS.USER,
     WINDOW
   );
 
@@ -24,7 +24,7 @@ export async function rateLimiter(req: Request, res: Response, next: NextFunctio
   const globalAllowed = await slidingLimiter(
     redis,
     "rate:global",
-    GLOBAL_LIMIT,
+    RATE_LIMITS.GLOBAL,
     WINDOW
   );
 

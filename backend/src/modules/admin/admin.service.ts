@@ -3,6 +3,7 @@ import Testcase from "../../db/models/Testcase";
 import { paginate, paginateAggregate } from "../../shared/utils/pagination";
 import AssignmentTestcase from "../../db/models/AssignmentTestcase";
 import User from "../../db/models/User";
+import { PAGINATION_LIMITS, SEARCH_LIMITS } from "../../shared/constants";
 
 export async function getAdminSummary() {
     const [totalUsers, totalAssignments, totalTestcases] = await Promise.all([
@@ -18,7 +19,7 @@ export async function getAdminSummary() {
     };
 }
 
-export async function getUsersAdmin(page = 1, limit = 20) {
+export async function getUsersAdmin(page = 1, limit: number = PAGINATION_LIMITS.ADMIN) {
     return paginate<any>(User, { role: "user" }, {
         page,
         limit,
@@ -28,14 +29,14 @@ export async function getUsersAdmin(page = 1, limit = 20) {
 }
 
 export async function searchUsersAdmin(query: string) {
-    if (!query || query.trim().length < 2) return [];
+    if (!query || query.trim().length < SEARCH_LIMITS.MIN_QUERY_LENGTH) return [];
     return User.find({
         username: { $regex: query.trim().replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), $options: "i" },
         role: "user"
-    }).select("-password").limit(10).lean();
+    }).select("-password").limit(SEARCH_LIMITS.USER).lean();
 }
 
-export async function getAllAssignmentsAdmin(page = 1, limit = 20) {
+export async function getAllAssignmentsAdmin(page = 1, limit: number = PAGINATION_LIMITS.ADMIN) {
     return paginate<any>(Assignment, {}, { page, limit, sort: { createdAt: -1 } });
 }
 
@@ -66,7 +67,7 @@ export async function deleteAssignmentAdmin(id: string) {
     return deleted;
 }
 
-export async function getAllTestcasesAdmin(page = 1, limit = 20) {
+export async function getAllTestcasesAdmin(page = 1, limit: number = PAGINATION_LIMITS.ADMIN) {
     const basePipeline = [{ $sort: { createdAt: -1 } }];
 
     const postPaginationPipeline = [
@@ -137,7 +138,7 @@ export async function deleteTestcaseAdmin(id: string) {
 }
 
 export async function searchAssignmentsAdmin(query: string) {
-    if (!query || query.trim().length < 2) return [];
+    if (!query || query.trim().length < SEARCH_LIMITS.MIN_QUERY_LENGTH) return [];
 
     const q = query.trim();
 
@@ -147,7 +148,7 @@ export async function searchAssignmentsAdmin(query: string) {
         { score: { $meta: "textScore" }, title: 1, difficulty: 1 }
     )
         .sort({ score: { $meta: "textScore" } })
-        .limit(8)
+        .limit(SEARCH_LIMITS.ASSIGNMENT)
         .lean();
 
     if (results.length > 0) return results;
@@ -158,7 +159,7 @@ export async function searchAssignmentsAdmin(query: string) {
         { title: { $regex: escaped, $options: "i" } },
         { title: 1, difficulty: 1 }
     )
-        .limit(8)
+        .limit(SEARCH_LIMITS.ASSIGNMENT)
         .lean();
 }
 
