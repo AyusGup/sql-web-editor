@@ -11,7 +11,7 @@ import logger from "../../shared/logger";
 
 export async function executeController(req: Request, res: Response) {
   try {
-    const { assignmentId, query, type = "run" } = req.body;
+    const { assignmentId, query, type = "run" } = req.validatedBody;
 
     validateQuery(query);
 

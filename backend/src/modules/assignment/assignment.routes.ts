@@ -3,13 +3,15 @@ import {
   listAssignments,
   getAssignment,
 } from "./assignment.controller";
-import { assignmentParamSchema } from "../../shared/zod/schema";
+import { idParamSchema, paginationQuerySchema } from "../../shared/zod/schema";
 import { validateQueryParams } from "../../middlewares/schema-validation.middleware";
 import { protect } from "../../middlewares/auth.middleware";
 
 const router = Router();
 
-router.get("/", validateQueryParams(assignmentParamSchema), protect, getAssignment);
-router.get("/list", protect, listAssignments);
+router.use(protect);
+
+router.get("/", validateQueryParams(idParamSchema), getAssignment);
+router.get("/list", validateQueryParams(paginationQuerySchema), listAssignments);
 
 export default router;

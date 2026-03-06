@@ -1,10 +1,10 @@
 import dotenv from "dotenv";
 dotenv.config();
 
-import { connectMongo } from "../src/db/config/mongo";
-import Assignment from "../src/db/models/Assignment";
-import Testcase from "../src/db/models/Testcase";
-import AssignmentTestcase from "../src/db/models/AssignmentTestcase";
+import { connectMongo } from "../db/config/mongo";
+import Assignment from "../db/models/Assignment";
+import Testcase from "../db/models/Testcase";
+import AssignmentTestcase from "../db/models/AssignmentTestcase";
 import assignments from "./data/assignment.json";
 
 async function runSeed() {

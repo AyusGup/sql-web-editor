@@ -6,13 +6,15 @@ import { protect } from "../../middlewares/auth.middleware";
 
 const router = Router();
 
-router.post("/run", validateBody(executeQuerySchema), protect, (req, res, next) => {
-    req.body.type = "run";
+router.use(protect);
+
+router.post("/run", validateBody(executeQuerySchema), (req, res, next) => {
+    req.validatedBody.type = "run";
     next();
 }, executeController);
 
-router.post("/submit", validateBody(executeQuerySchema), protect, (req, res, next) => {
-    req.body.type = "submit";
+router.post("/submit", validateBody(executeQuerySchema), (req, res, next) => {
+    req.validatedBody.type = "submit";
     next();
 }, executeController);
 

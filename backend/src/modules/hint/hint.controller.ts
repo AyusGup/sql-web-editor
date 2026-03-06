@@ -6,16 +6,17 @@ import logger from "../../shared/logger";
 
 export async function getSQLHintController(req: Request, res: Response) {
   try {
-    const { problemId, userQuery } = req.body;
+    const { problemId, userQuery } = req.validatedBody;
 
     const hint = await getSQLHint(problemId, userQuery);
 
-    return res.status(200).json({
-      success: true,
-      data: {
-        hint,
-      },
-    });
+    return responseHandler(
+      res,
+      true,
+      200,
+      "Hint generated successfully",
+      hint
+    );
   } catch (error: any) {
     logger.error("SQL hint error: %s", error.message);
 

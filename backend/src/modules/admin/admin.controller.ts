@@ -15,8 +15,8 @@ export const getSummary = async (req: Request, res: Response) => {
 
 export const listAssignments = async (req: Request, res: Response) => {
     try {
-        const page = Math.max(1, parseInt(req.query.page as string) || 1);
-        const limit = Math.min(100, Math.max(1, parseInt(req.query.limit as string) || 20));
+        const page = Math.max(1, parseInt(req.validatedQuery.page) || 1);
+        const limit = Math.min(100, Math.max(1, parseInt(req.validatedQuery.limit) || 20));
         const result = await adminService.getAllAssignmentsAdmin(page, limit);
         responseHandler(res, true, 200, "Assignments fetched", result);
     } catch (error: any) {
@@ -27,7 +27,7 @@ export const listAssignments = async (req: Request, res: Response) => {
 
 export const createAssignment = async (req: Request, res: Response) => {
     try {
-        const assignment = await adminService.createAssignmentAdmin(req.body);
+        const assignment = await adminService.createAssignmentAdmin(req.validatedBody);
         responseHandler(res, true, 201, "Assignment created", assignment);
     } catch (error: any) {
         logger.error("Admin assignment creation failed: %s", error.message);
@@ -36,9 +36,9 @@ export const createAssignment = async (req: Request, res: Response) => {
 };
 
 export const updateAssignment = async (req: Request, res: Response) => {
-    const { id } = req.params;
+    const { id } = req.validatedParams;
     try {
-        const assignment = await adminService.updateAssignmentAdmin(String(id), req.body);
+        const assignment = await adminService.updateAssignmentAdmin(id, req.validatedBody);
         if (!assignment) return responseHandler(res, false, 404, "Assignment not found");
         responseHandler(res, true, 200, "Assignment updated", assignment);
     } catch (error: any) {
@@ -51,9 +51,9 @@ export const updateAssignment = async (req: Request, res: Response) => {
 };
 
 export const deleteAssignment = async (req: Request, res: Response) => {
-    const { id } = req.params;
+    const { id } = req.validatedParams;
     try {
-        const deleted = await adminService.deleteAssignmentAdmin(String(id));
+        const deleted = await adminService.deleteAssignmentAdmin(id);
         if (!deleted) return responseHandler(res, false, 404, "Assignment not found");
         responseHandler(res, true, 200, "Assignment deleted", deleted);
     } catch (error: any) {
@@ -64,8 +64,8 @@ export const deleteAssignment = async (req: Request, res: Response) => {
 
 export const listTestcases = async (req: Request, res: Response) => {
     try {
-        const page = Math.max(1, parseInt(req.query.page as string) || 1);
-        const limit = Math.min(100, Math.max(1, parseInt(req.query.limit as string) || 20));
+        const page = Math.max(1, parseInt(req.validatedQuery.page) || 1);
+        const limit = Math.min(100, Math.max(1, parseInt(req.validatedQuery.limit) || 20));
         const result = await adminService.getAllTestcasesAdmin(page, limit);
         responseHandler(res, true, 200, "Testcases fetched", result);
     } catch (error: any) {
@@ -76,7 +76,7 @@ export const listTestcases = async (req: Request, res: Response) => {
 
 export const createTestcase = async (req: Request, res: Response) => {
     try {
-        const testcase = await adminService.createTestcaseAdmin(req.body);
+        const testcase = await adminService.createTestcaseAdmin(req.validatedBody);
         responseHandler(res, true, 201, "Testcase created", testcase);
     } catch (error: any) {
         logger.error("Admin testcase creation failed: %s", error.message);
@@ -85,9 +85,9 @@ export const createTestcase = async (req: Request, res: Response) => {
 };
 
 export const updateTestcase = async (req: Request, res: Response) => {
-    const { id } = req.params;
+    const { id } = req.validatedParams;
     try {
-        const testcase = await adminService.updateTestcaseAdmin(String(id), req.body);
+        const testcase = await adminService.updateTestcaseAdmin(id, req.validatedBody);
         if (!testcase) return responseHandler(res, false, 404, "Testcase not found");
         responseHandler(res, true, 200, "Testcase updated", testcase);
     } catch (error: any) {
@@ -100,9 +100,9 @@ export const updateTestcase = async (req: Request, res: Response) => {
 };
 
 export const deleteTestcase = async (req: Request, res: Response) => {
-    const { id } = req.params;
+    const { id } = req.validatedParams || req.params;
     try {
-        const deleted = await adminService.deleteTestcaseAdmin(String(id));
+        const deleted = await adminService.deleteTestcaseAdmin(id);
         if (!deleted) return responseHandler(res, false, 404, "Testcase not found");
         responseHandler(res, true, 200, "Testcase deleted", deleted);
     } catch (error: any) {
@@ -112,13 +112,13 @@ export const deleteTestcase = async (req: Request, res: Response) => {
 };
 
 export const syncLinks = async (req: Request, res: Response) => {
-    const { id } = req.params;
-    const { assignmentIds } = req.body;
+    const { id } = req.validatedParams;
+    const { assignmentIds } = req.validatedBody;
     try {
         if (!Array.isArray(assignmentIds)) {
             return responseHandler(res, false, 400, "assignmentIds must be an array");
         }
-        const result = await adminService.syncTestcaseLinks(String(id), assignmentIds);
+        const result = await adminService.syncTestcaseLinks(id, assignmentIds);
         responseHandler(res, true, 200, "Links synced", result);
     } catch (error: any) {
         logger.error("Admin sync links failure: %s", error.message);
@@ -128,7 +128,7 @@ export const syncLinks = async (req: Request, res: Response) => {
 
 export const searchAssignments = async (req: Request, res: Response) => {
     try {
-        const q = req.query.q as string || "";
+        const q = req.validatedQuery.q || "";
         const results = await adminService.searchAssignmentsAdmin(q);
         responseHandler(res, true, 200, "Search results", results);
     } catch (error: any) {

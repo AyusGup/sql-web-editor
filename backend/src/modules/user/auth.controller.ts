@@ -6,7 +6,7 @@ import logger from "../../shared/logger";
 
 
 export const registerController = async (req: Request, res: Response) => {
-  const { username, password } = req.body;
+  const { username, password } = req.validatedBody;
   try {
     const existingUser = await findByUsername(username);
     if (existingUser) return responseHandler(res, false, 400, "Username taken");
@@ -27,7 +27,7 @@ export const registerController = async (req: Request, res: Response) => {
 };
 
 export const loginController = async (req: Request, res: Response) => {
-  const { username, password } = req.body;
+  const { username, password } = req.validatedBody;
   try {
     const user = await findByUsername(username);
     if (!user || !(await user.comparePassword(password))) {

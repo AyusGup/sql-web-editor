@@ -8,7 +8,8 @@
     "build": "tsc",
     "start": "node dist/index.js",
     "seed": "ts-node scripts/seed.ts",
-    "lint": "tsc --noEmit"
+    "lint": "tsc --noEmit",
+    "init-superadmin": "ts-node scripts/init-superadmin.ts"
   },
   "keywords": [],
   "author": "",
@@ -24,6 +25,7 @@
     "cors": "^2.8.6",
     "dotenv": "^17.3.1",
     "express": "^5.2.1",
+    "helmet": "^8.1.0",
     "ioredis": "^5.9.3",
     "jsonwebtoken": "^9.0.3",
     "mongoose": "^9.2.2",
@@ -37,6 +39,7 @@
     "@types/cookie-parser": "^1.4.10",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
+    "@types/helmet": "^4.0.0",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/morgan": "^1.9.10",
     "@types/node": "^25.3.0",

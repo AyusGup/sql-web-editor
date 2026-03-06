@@ -11,14 +11,14 @@ import { getUserProgressById } from "../user/user.service";
 
 export async function listAssignments(req: Request, res: Response) {
   try {
-    const { page, limit, difficulty, tags } = req.query;
+    const { page, limit, difficulty, tags } = req.validatedQuery;
 
     const result = await getAssignments({
       page: Number(page) || 1,
       limit: Number(limit) || 10,
-      difficulty: difficulty as string,
+      difficulty: difficulty,
       tags: tags ? (Array.isArray(tags) ? (tags as string[]) : (tags as string).split(",")) : undefined,
-      userId: req.userId as string,
+      userId: req.userId,
     });
 
     return responseHandler(
@@ -75,7 +75,7 @@ export async function getAssignment(req: Request, res: Response) {
 
 export async function saveController(req: Request, res: Response) {
   try {
-    const { assignmentId, sqlQuery } = req.body;
+    const { assignmentId, sqlQuery } = req.validatedBody;
 
     const progress = await UserProgress.findOneAndUpdate(
       { userId: req.userId, assignmentId },

@@ -5,7 +5,7 @@ const objectId = z
   .string()
   .regex(/^[0-9a-fA-F]{24}$/, "Invalid ObjectId");
 
-export const assignmentParamSchema = z.object({
+export const idParamSchema = z.object({
   id: objectId,
 });
 
@@ -49,4 +49,61 @@ export const executeQuerySchema = z.object({
 export const sqlHintSchema = z.object({
   problemId: objectId,
   userQuery: z.string()
+});
+
+// ---------- Superadmin Schemas ----------
+
+export const userSearchSchema = z.object({
+  q: z.string({ message: "Search query must be string" }).min(2, "Search query must be at least 2 characters")
+});
+
+export const userIdParamSchema = z.object({
+  userId: objectId,
+});
+
+export const updateRoleSchema = z.object({
+  role: z.enum(["user", "admin", "superadmin"], { error: "Invalid role" })
+});
+
+// ---------- Admin Schemas ----------
+
+export const paginationQuerySchema = z.object({
+  page: z.string().optional().default("1"),
+  limit: z.string().optional().default("10"),
+  difficulty: z.string().optional(),
+  tags: z.union([z.string(), z.array(z.string())]).optional(),
+  q: z.string().optional(),
+});
+
+export const assignmentBodySchema = z.object({
+  title: z.string().min(1, "Title is required"),
+  difficulty: z.enum(["Easy", "Medium", "Hard"]),
+  question: z.string().min(1, "Question is required"),
+  tags: z.array(z.string()).optional(),
+  version: z.number().optional()
+});
+
+export const assignmentUpdateSchema = assignmentBodySchema.partial();
+
+export const testcaseBodySchema = z.object({
+  sampleTables: z.array(z.object({
+    tableName: z.string(),
+    columns: z.array(z.object({
+      columnName: z.string(),
+      dataType: z.string()
+    })),
+    rows: z.array(z.any()).optional()
+  })),
+  expectedOutput: z.object({
+    type: z.enum(["table", "single_value", "column", "count"]),
+    value: z.any()
+  }),
+  visible: z.boolean().optional(),
+  version: z.number().optional()
+});
+
+export const testcaseUpdateSchema = testcaseBodySchema.partial();
+
+export const syncLinksSchema = z.object({
+  assignmentIds: z.array(objectId)
 });

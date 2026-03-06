@@ -9,7 +9,7 @@ export const validateBody =
     try {
       // Validate request body against schema
       const parsedSchema = schema.parse(req.body);
-      req.body = parsedSchema;
+      req.validatedBody = parsedSchema;
       next();
     } catch (err: any) {
       if (err instanceof ZodError) {
@@ -23,6 +23,29 @@ export const validateBody =
         });
       }
       logger.error("Error parsing request body: %s", err.message);
+      responseHandler(res, false, 400, "Internal server error");
+    }
+  };
+
+export const validateParams =
+  (schema: ZodSchema) => (req: Request, res: Response, next: NextFunction) => {
+    try {
+      // Validate request params against schema
+      const parsedSchema = schema.parse(req.params);
+      req.validatedParams = parsedSchema;
+      next();
+    } catch (err: any) {
+      if (err instanceof ZodError) {
+        const formattedErrors = err.issues.map((e) => ({
+          field: e.path.join("."),
+          message: e.message,
+        }));
+        return responseHandler(res, false, 400, undefined, undefined, {
+          error: "Validation failed",
+          details: formattedErrors,
+        });
+      }
+      logger.error("Error parsing request params: %s", err.message);
       responseHandler(res, false, 400, "Internal server error");
     }
   };
