@@ -17,13 +17,23 @@ export const listUsers = async (req: Request, res: Response) => {
     try {
         const page = Math.max(1, parseInt(req.validatedQuery.page) || 1);
         const limit = Math.min(100, Math.max(1, parseInt(req.validatedQuery.limit) || 20));
-        const q = req.validatedQuery.q;
 
-        const result = await adminService.getUsersAdmin(page, limit, q);
+        const result = await adminService.getUsersAdmin(page, limit);
         responseHandler(res, true, 200, "Users fetched", result);
     } catch (error: any) {
         logger.error("Admin users fetch failed: %s", error.message);
         responseHandler(res, false, 500, "Failed to fetch users");
+    }
+};
+
+export const searchUsers = async (req: Request, res: Response) => {
+    try {
+        const q = req.validatedQuery.q || "";
+        const results = await adminService.searchUsersAdmin(q);
+        responseHandler(res, true, 200, "Search results", results);
+    } catch (error: any) {
+        logger.error("Admin user search failed: %s", error.message);
+        responseHandler(res, false, 500, "Failed to search users");
     }
 };
 
@@ -36,6 +46,17 @@ export const listAssignments = async (req: Request, res: Response) => {
     } catch (error: any) {
         logger.error("Admin assignments fetch failed: %s", error.message);
         responseHandler(res, false, 500, "Failed to fetch assignments");
+    }
+};
+
+export const searchAssignments = async (req: Request, res: Response) => {
+    try {
+        const q = req.validatedQuery.q || "";
+        const results = await adminService.searchAssignmentsAdmin(q);
+        responseHandler(res, true, 200, "Search results", results);
+    } catch (error: any) {
+        logger.error("Admin assignment search failed: %s", error.message);
+        responseHandler(res, false, 500, "Failed to search assignments");
     }
 };
 
@@ -137,16 +158,5 @@ export const syncLinks = async (req: Request, res: Response) => {
     } catch (error: any) {
         logger.error("Admin sync links failure: %s", error.message);
         responseHandler(res, false, 500, "Failed to sync links");
-    }
-};
-
-export const searchAssignments = async (req: Request, res: Response) => {
-    try {
-        const q = req.validatedQuery.q || "";
-        const results = await adminService.searchAssignmentsAdmin(q);
-        responseHandler(res, true, 200, "Search results", results);
-    } catch (error: any) {
-        logger.error("Admin assignment search failed: %s", error.message);
-        responseHandler(res, false, 500, "Failed to search assignments");
     }
 };

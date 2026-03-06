@@ -21,7 +21,8 @@ router.use(protect, authorize("admin"));
 
 router.get("/summary", adminController.getSummary);
 
-router.get("/users", validateQueryParams(userPaginationSchema), adminController.listUsers);
+router.get("/users", validateQueryParams(paginationQuerySchema), adminController.listUsers);
+router.get("/users/search", validateQueryParams(userSearchSchema), adminController.searchUsers);
 
 router.get("/assignments", validateQueryParams(paginationQuerySchema), adminController.listAssignments);
 router.get("/assignments/search", validateQueryParams(userSearchSchema), adminController.searchAssignments);

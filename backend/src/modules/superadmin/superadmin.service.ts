@@ -4,12 +4,8 @@ import { paginate } from "../../shared/utils/pagination";
 /**
  * List all users with admin roles.
  */
-export async function listAdmins(page = 1, limit = 20, search?: string) {
+export async function listAdmins(page = 1, limit = 20) {
     const filter: any = { role: { $in: ["admin"] } };
-
-    if (search && search.trim().length >= 2) {
-        filter.username = { $regex: search.trim().replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), $options: "i" };
-    }
 
     return paginate<any>(User, filter, {
         page,
