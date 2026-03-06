@@ -4,6 +4,7 @@ import { paginate, paginateAggregate } from "../../shared/utils/pagination";
 import AssignmentTestcase from "../../db/models/AssignmentTestcase";
 import User from "../../db/models/User";
 import { PAGINATION_LIMITS, SEARCH_LIMITS } from "../../shared/constants";
+import { escapeRegex } from "../../shared/utils/regex";
 
 export async function getAdminSummary() {
     const [totalUsers, totalAssignments, totalTestcases] = await Promise.all([
@@ -31,7 +32,7 @@ export async function getUsersAdmin(page = 1, limit: number = PAGINATION_LIMITS.
 export async function searchUsersAdmin(query: string) {
     if (!query || query.trim().length < SEARCH_LIMITS.MIN_QUERY_LENGTH) return [];
     return User.find({
-        username: { $regex: query.trim().replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), $options: "i" },
+        username: { $regex: escapeRegex(query.trim()), $options: "i" },
         role: "user"
     }).select("-password").limit(SEARCH_LIMITS.USER).lean();
 }
@@ -154,9 +155,8 @@ export async function searchAssignmentsAdmin(query: string) {
     if (results.length > 0) return results;
 
     // Fallback: substring matching via regex 
-    const escaped = q.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
     return Assignment.find(
-        { title: { $regex: escaped, $options: "i" } },
+        { title: { $regex: escapeRegex(q), $options: "i" } },
         { title: 1, difficulty: 1 }
     )
         .limit(SEARCH_LIMITS.ASSIGNMENT)
