@@ -21,7 +21,7 @@ if (
   throw new Error("DB environment variables are undefined");
 }
 
-const ssl = process.env.NODE_ENV === "test" ? false : { rejectUnauthorized: false };
+const ssl = false; // Disable SSL for container-to-container communication
 
 const adminPool = new Pool({
   host: POSTGRES_HOST,

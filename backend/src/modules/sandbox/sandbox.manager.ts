@@ -7,6 +7,7 @@ import { cleanupQueue } from "../queue/cleanup.queue";
 import { MAX_RETRIES } from "../../shared/constants";
 import { ISampleTable } from "../../types/schema";
 
+const RUNNER_USER = process.env.RUNNER_USER;
 
 function getKey(userId: string, testcaseId: string) {
   return `sandbox:${userId}:${testcaseId}`;
@@ -106,9 +107,9 @@ async function createSchema(
     await seedSandbox(client, sampleTables, schema);
 
     // Grant the runner user access ONLY to this specific temporary schema
-    await client.query(`GRANT USAGE ON SCHEMA ${schema} TO read_write_runner`);
+    await client.query(`GRANT USAGE ON SCHEMA ${schema} TO ${RUNNER_USER}`);
     await client.query(
-      `GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA ${schema} TO read_write_runner`
+      `GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA ${schema} TO ${RUNNER_USER}`
     );
   } finally {
     client.release();

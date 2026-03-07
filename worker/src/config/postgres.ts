@@ -19,7 +19,7 @@ if (
   throw new Error("DB environment variables are undefined");
 }
 
-const ssl = process.env.NODE_ENV === "test" ? false : { rejectUnauthorized: false };
+const ssl = false;
 
 const pool = new Pool({
   host: POSTGRES_HOST,
