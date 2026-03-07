@@ -36,6 +36,12 @@ ENV NODE_ENV=production
 COPY --from=prod-deps /app/node_modules ./node_modules
 COPY --from=build /app/dist ./dist
 
+# Create logs directory and set permissions for node user
+RUN mkdir -p /app/logs && chown -R node:node /app/logs
+
+# Switch to non-root user
+USER node
+
 # Expose port
 EXPOSE 3000
 

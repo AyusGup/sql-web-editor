@@ -74,8 +74,15 @@ async function createSchema(
   const locked = await redis.set(lockKey, "1", { NX: true, EX: 10 });
 
   if (!locked) {
-    // Another process is creating this schema, wait and let the caller retry
-    await new Promise((r) => setTimeout(r, 300));
+    // Another process is creating this schema, wait with jittered exponential backoff
+    // This prevents multiple requests from slamming the DB at the same time if it's lagging.
+    const baseDelay = 300;
+    const maxJitter = 200;
+    const jitter = Math.floor(Math.random() * maxJitter);
+    const delay = baseDelay + jitter;
+
+    await new Promise((r) => setTimeout(r, delay));
+
     // Check if schema was created by now
     const client = await adminPool.connect();
     try {
@@ -89,7 +96,7 @@ async function createSchema(
     } finally {
       client.release();
     }
-    throw new Error("Schema creation in progress, please retry");
+    throw new Error("Resource Busy: Schema creation in progress, please retry");
   }
 
   const client = await adminPool.connect();
@@ -149,6 +156,10 @@ async function executeAndManageJob(
 
       // YES → Remove Cache
       await redis.del(cacheKey);
+
+      // Implement exponential backoff for restoration retries
+      const backoffDelay = Math.pow(2, retryCount) * 1000 + Math.random() * 500;
+      await new Promise((r) => setTimeout(r, backoffDelay));
 
       // Retry Process Again
       return executeInSandbox(userId, testcaseId, sampleTables, query, retryCount + 1);

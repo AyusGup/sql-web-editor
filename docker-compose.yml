@@ -21,6 +21,17 @@ services:
       - shared_logs:/app/logs
     command: sh -c "node dist/scripts/init-superadmin.js && node dist/index.js"
     restart: always
+    deploy:
+      resources:
+        limits:
+          memory: 192M
+        reservations:
+          memory: 128M
+    cpu_shares: 1024
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
   cleanup:
     build:
       context: worker
@@ -40,6 +51,17 @@ services:
     volumes:
       - shared_logs:/app/logs
     restart: always
+    deploy:
+      resources:
+        limits:
+          memory: 128M
+        reservations:
+          memory: 64M
+    cpu_shares: 512
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
   postgres:
     image: postgres:17-alpine
     container_name: ciphersql_postgres
@@ -47,9 +69,11 @@ services:
       postgres
       -c statement_timeout=5000
       -c idle_in_transaction_session_timeout=10000
-      -c max_connections=50
-      -c shared_buffers=128MB
+      -c max_connections=20
+      -c shared_buffers=32MB
       -c work_mem=2MB
+      -c maintenance_work_mem=16MB
+      -c effective_cache_size=128MB
     ports:
       - "5432:5432"
     environment:
@@ -63,9 +87,24 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    deploy:
+      resources:
+        limits:
+          memory: 192M
+        reservations:
+          memory: 96M
+    cpu_shares: 1024
+    cap_drop:
+      - ALL
+    cap_add:
+      - CHOWN
+      - SETUID
+      - SETGID
+      - DAC_OVERRIDE
   mongodb:
     image: mongo:7
     container_name: ciphersql_mongo
+    command: ["--wiredTigerCacheSizeGB", "0.25"]
     ports:
       - "27017:27017"
     environment:
@@ -78,6 +117,20 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+        reservations:
+          memory: 128M
+    cpu_shares: 512
+    cap_drop:
+      - ALL
+    cap_add:
+      - CHOWN
+      - SETUID
+      - SETGID
+      - DAC_OVERRIDE
   redis:
     image: redis:7-alpine
     container_name: ciphersql_redis
@@ -85,12 +138,26 @@ services:
       - "6379:6379"
     volumes:
       - redisdata:/data
-    command: ["redis-server", "--appendonly", "yes"]
+    command: ["redis-server", "--appendonly", "yes", "--maxmemory", "48mb", "--maxmemory-policy", "allkeys-lru"]
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 5s
       timeout: 5s
       retries: 5
+    deploy:
+      resources:
+        limits:
+          memory: 64M
+        reservations:
+          memory: 32M
+    cpu_shares: 256
+    cap_drop:
+      - ALL
+    cap_add:
+      - CHOWN
+      - SETUID
+      - SETGID
+      - DAC_OVERRIDE
 
 volumes:
   sandboxdata:
