@@ -9,32 +9,32 @@ import { ISampleTable } from "../../types/schema";
 
 const RUNNER_USER = process.env.RUNNER_USER;
 
-function getKey(userId: string, testcaseId: string) {
-  return `sandbox:${userId}:${testcaseId}`;
+function getKey(userId: string, assignmentId: string) {
+  return `sandbox:${userId}:${assignmentId}`;
 }
 
-function getSchema(userId: string, testcaseId: string) {
-  return `workspace_${userId}_${testcaseId}`;
+function getSchema(userId: string, assignmentId: string) {
+  return `workspace_${userId}_${assignmentId}`;
 }
 
 
 export async function executeInSandbox(
   userId: string,
-  testcaseId: string,
+  assignmentId: string,
   sampleTables: ISampleTable[],
   query: string,
   retryCount = 0
 ): Promise<Record<string, unknown>[]> {
   const redis = getRedis();
-  const key = getKey(userId, testcaseId);
-  const schema = getSchema(userId, testcaseId);
+  const key = getKey(userId, assignmentId);
+  const schema = getSchema(userId, assignmentId);
 
   // Check Cache
   const cached = await redis.get(key);
 
   if (cached) {
     // Cache HIT → Execute Query
-    return executeAndManageJob(schema, query, key, userId, testcaseId, sampleTables, retryCount);
+    return executeAndManageJob(schema, query, key, userId, assignmentId, sampleTables, retryCount);
   }
 
   // Cache MISS → DB Lookup for Schema 
@@ -50,7 +50,7 @@ export async function executeInSandbox(
       // Schema exists in DB → Execute Query 
       // Set in cache first since we found it
       await redis.set(key, schema, { EX: TTL });
-      return executeAndManageJob(schema, query, key, userId, testcaseId, sampleTables, retryCount);
+      return executeAndManageJob(schema, query, key, userId, assignmentId, sampleTables, retryCount);
     }
   } finally {
     client.release();
@@ -60,7 +60,7 @@ export async function executeInSandbox(
   await createSchema(schema, sampleTables, key);
 
   // Execute Query on the newly created schema
-  return executeAndManageJob(schema, query, key, userId, testcaseId, sampleTables, retryCount);
+  return executeAndManageJob(schema, query, key, userId, assignmentId, sampleTables, retryCount);
 }
 
 async function createSchema(
@@ -129,7 +129,7 @@ async function executeAndManageJob(
   query: string,
   cacheKey: string,
   userId: string,
-  testcaseId: string,
+  assignmentId: string,
   sampleTables: ISampleTable[],
   retryCount: number
 ): Promise<Record<string, unknown>[]> {
@@ -140,7 +140,7 @@ async function executeAndManageJob(
     const rows = await executeSandboxQuery(schema, query);
 
     // Query PASSED → Manage delayed cleanup job 
-    await manageCleanupJob(schema, userId, testcaseId);
+    await manageCleanupJob(schema, userId, assignmentId);
 
     // Set schema state in cache (refresh TTL)
     await redis.expire(cacheKey, TTL);
@@ -163,7 +163,7 @@ async function executeAndManageJob(
       await new Promise((r) => setTimeout(r, backoffDelay));
 
       // Retry Process Again
-      return executeInSandbox(userId, testcaseId, sampleTables, query, retryCount + 1);
+      return executeInSandbox(userId, assignmentId, sampleTables, query, retryCount + 1);
     }
 
     throw err;
@@ -185,9 +185,9 @@ function isSchemaNotFound(err: any): boolean {
 async function manageCleanupJob(
   schema: string,
   userId: string,
-  testcaseId: string
+  assignmentId: string
 ) {
-  const jobId = `cleanup:${userId}:${testcaseId}`;
+  const jobId = `cleanup:${userId}:${assignmentId}`;
   const delay = TTL * 1000;
 
   const existing = await cleanupQueue.getJob(jobId);
@@ -225,9 +225,9 @@ async function scheduleNewCleanupJob(schema: string, jobId: string, delay: numbe
 }
 
 
-export async function resetSandbox(userId: string, testcaseId: string) {
+export async function resetSandbox(userId: string, assignmentId: string) {
   const redis = getRedis();
-  const schema = getSchema(userId, testcaseId);
+  const schema = getSchema(userId, assignmentId);
 
   const client = await adminPool.connect();
 
@@ -237,5 +237,5 @@ export async function resetSandbox(userId: string, testcaseId: string) {
     client.release();
   }
 
-  await redis.del(getKey(userId, testcaseId));
+  await redis.del(getKey(userId, assignmentId));
 }
