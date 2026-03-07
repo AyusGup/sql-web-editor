@@ -48,7 +48,7 @@ export async function executeController(req: Request, res: Response) {
 
       const rows = await executeInSandbox(
         req.userId as string,
-        assignmentId,
+        tid,
         tc.sampleTables,
         query
       );
