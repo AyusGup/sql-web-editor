@@ -51,8 +51,13 @@ app.use(cookieParser());
 app.use('/admin/queues', protect, authorize("admin"), bullBoardAdapter.getRouter());
 app.use("/api", apiHandler);
 
+import { loadVaultSecrets } from "./config/vault";
+
 async function startServer() {
   try {
+    // Load Azure Key Vault secrets first (if in production/staging)
+    await loadVaultSecrets();
+
     // Connect MongoDB once at startup
     await connectMongo();
 

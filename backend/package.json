@@ -16,6 +16,8 @@
   "license": "ISC",
   "packageManager": "pnpm@10.30.0",
   "dependencies": {
+    "@azure/identity": "^4.13.0",
+    "@azure/keyvault-secrets": "^4.10.0",
     "@bull-board/api": "^6.20.3",
     "@bull-board/express": "^6.20.3",
     "@google/generative-ai": "^0.24.1",
