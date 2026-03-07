@@ -3,11 +3,25 @@ import { pool } from "./config/postgres";
 import { Worker } from "bullmq";
 import logger from "./config/logger";
 import { startLogCleanupCron } from "./log-cleanup";
+import * as appInsights from "applicationinsights";
+
+if (process.env.APPLICATIONINSIGHTS_CONNECTION_STRING) {
+  appInsights.setup(process.env.APPLICATIONINSIGHTS_CONNECTION_STRING)
+    .setAutoDependencyCorrelation(true)
+    .setAutoCollectRequests(true)
+    .setAutoCollectPerformance(true, true)
+    .setAutoCollectExceptions(true)
+    .setAutoCollectDependencies(true)
+    .setAutoCollectConsole(true)
+    .start();
+}
 
 const worker = new Worker(
   "sandbox-cleanup",
   async (job) => {
     const { schema } = job.data;
+    const telemetry = appInsights.defaultClient;
+    const startTime = Date.now();
 
     if (!schema || !schema.startsWith("workspace_")) {
       throw new Error("Invalid schema name");
@@ -15,7 +29,29 @@ const worker = new Worker(
 
     logger.info("Dropping schema: %s", schema);
 
-    await pool.query(`DROP SCHEMA IF EXISTS ${schema} CASCADE`);
+    try {
+      await pool.query(`DROP SCHEMA IF EXISTS ${schema} CASCADE`);
+
+      telemetry?.trackDependency({
+        target: 'PostgreSQL-Worker',
+        name: 'CleanupSchema',
+        data: `DROP SCHEMA ${schema}`,
+        duration: Date.now() - startTime,
+        resultCode: 0,
+        success: true,
+        dependencyTypeName: 'SQL'
+      });
+    } catch (err) {
+      telemetry?.trackException({ exception: err as Error });
+      telemetry?.trackDependency({
+        target: 'PostgreSQL-Worker',
+        name: 'CleanupSchema',
+        duration: Date.now() - startTime,
+        success: false,
+        dependencyTypeName: 'SQL'
+      });
+      throw err;
+    }
   },
   {
     connection: bullmqRedis,

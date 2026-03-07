@@ -19,6 +19,7 @@
     "@bull-board/api": "^6.20.3",
     "@bull-board/express": "^6.20.3",
     "@google/generative-ai": "^0.24.1",
+    "applicationinsights": "^3.14.0",
     "bcryptjs": "^3.0.3",
     "bullmq": "^5.70.1",
     "cookie-parser": "^1.4.7",

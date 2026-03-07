@@ -14,7 +14,18 @@ import AdminTestcasesPage from './pages/admin/AdminTestcasesPage'
 import UserManagementPage from './pages/admin/UserManagementPage'
 import AdminManagementPage from './pages/superadmin/AdminManagementPage'
 import { ROUTES } from './constants/routes'
+import { appInsights } from './services/telemetry'
+import { useEffect } from 'react'
+import { useLocation } from 'react-router-dom'
 import './styles/main.scss'
+
+function TelemetryListener() {
+  const location = useLocation()
+  useEffect(() => {
+    appInsights.trackPageView({ name: location.pathname });
+  }, [location])
+  return null
+}
 
 export default function App() {
   return (
@@ -22,6 +33,7 @@ export default function App() {
       <ErrorBoundary>
         <ToastProvider>
           <BrowserRouter>
+            <TelemetryListener />
             <Routes>
               <Route path={ROUTES.LOGIN} element={<LoginPage />} />
               <Route path={ROUTES.REGISTER} element={<RegisterPage />} />

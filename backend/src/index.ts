@@ -1,5 +1,21 @@
-import express from "express";
+import * as appInsights from "applicationinsights";
 import dotenv from "dotenv";
+dotenv.config();
+
+if (process.env.APPLICATIONINSIGHTS_CONNECTION_STRING) {
+  appInsights.setup(process.env.APPLICATIONINSIGHTS_CONNECTION_STRING)
+    .setAutoDependencyCorrelation(true)
+    .setAutoCollectRequests(true)
+    .setAutoCollectPerformance(true, true)
+    .setAutoCollectExceptions(true)
+    .setAutoCollectDependencies(true)
+    .setAutoCollectConsole(true)
+    .setUseDiskRetryCaching(true)
+    .setSendLiveMetrics(true)
+    .start();
+}
+
+import express from "express";
 import cookieParser from 'cookie-parser';
 import { connectMongo } from "./db/config/mongo";
 import { connectRedis } from "./db/config/redis";
@@ -10,8 +26,6 @@ import logger from './shared/logger';
 import bullBoardAdapter from './shared/bull-board';
 import helmet from "helmet";
 import { protect, authorize } from "./middlewares/auth.middleware";
-
-dotenv.config();
 
 const app = express();
 const PORT: number = Number(process.env.PORT) || 3000;

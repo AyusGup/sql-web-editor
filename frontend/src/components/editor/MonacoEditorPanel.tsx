@@ -8,6 +8,7 @@ import { useAutosave } from '../../hooks/useAutosave'
 import { theme } from '../../theme/tokens'
 import { QUERY } from '../../constants/query'
 import { SAVE_STATUS } from '../../constants/ui'
+import { appInsights } from '../../services/telemetry'
 import './MonacoEditorPanel.scss'
 
 interface Props {
@@ -61,12 +62,24 @@ export default function MonacoEditorPanel({ assignmentId, initialQuery = '' }: P
     const handleRun = () => {
         const current = editorRef.current?.getValue() ?? query
         if (!current.trim() || current.length > QUERY.MAX_QUERY_LENGTH) return
+
+        appInsights.trackEvent({
+            name: 'SQL_Run_Requested',
+            properties: { assignmentId, queryLength: current.length }
+        });
+
         dispatch(runQueryThunk({ assignmentId, query: current }))
     }
 
     const handleSubmit = () => {
         const current = editorRef.current?.getValue() ?? query
         if (!current.trim() || current.length > QUERY.MAX_QUERY_LENGTH) return
+
+        appInsights.trackEvent({
+            name: 'SQL_Submit_Requested',
+            properties: { assignmentId, queryLength: current.length }
+        });
+
         dispatch(submitQueryThunk({ assignmentId, query: current }))
     }
 
