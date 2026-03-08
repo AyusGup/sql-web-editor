@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { executeInSandbox } from "./sandbox.manager";
+import { executeSandboxQuery } from "./sandbox.executor";
 import { validateQuery } from "./query.validator";
 import { gradeResult } from "../grader/grader.service";
 import Assignment from "../../db/models/Assignment";
@@ -46,9 +46,7 @@ export async function executeController(req: Request, res: Response) {
       const tc = testcases[i];
       const tid = (tc._id as any).toString();
 
-      const rows = await executeInSandbox(
-        req.userId as string,
-        tid,
+      const rows = await executeSandboxQuery(
         tc.sampleTables,
         query
       );

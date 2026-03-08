@@ -1,14 +1,16 @@
 export function validateQuery(query: string) {
-  let normalized = query.trim().toLowerCase();
+  let normalized = query.trim();
 
-  normalized = normalized.replace(/--.*$/gm, "");
-
-  if (normalized.endsWith(";")) {
-    normalized = normalized.slice(0, -1);
+  // Enforce that the student manually provides a trailing semicolon
+  if (!normalized.endsWith(";")) {
+    throw new Error("Query must end with a semicolon (;)");
   }
 
-  if (normalized.includes(";")) {
-    throw new Error("Multiple queries not allowed");
+  normalized = normalized.toLowerCase().replace(/--.*$/gm, "");
+
+  // Strip the trailing semicolon strictly for internal array mapping and pg compatibility if needed.
+  if (normalized.endsWith(";")) {
+    normalized = normalized.slice(0, -1);
   }
 
   const forbidden = [

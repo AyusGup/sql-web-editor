@@ -96,14 +96,7 @@ export default function Navbar() {
                                             Admins
                                         </button>
                                     )}
-                                    <a
-                                        className="btn btn-ghost btn-sm navbar-admin-btn"
-                                        href={(import.meta.env.VITE_API_URL || '').replace(/\/api\/?$/, '') + '/admin/queues'}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                    >
-                                        Queue
-                                    </a>
+
                                 </>
                             )}
 

@@ -23,7 +23,6 @@ import apiHandler from "./routes";
 import cors from "cors";
 import morgan from 'morgan';
 import logger from './shared/logger';
-import bullBoardAdapter from './shared/bull-board';
 import helmet from "helmet";
 import { protect, authorize } from "./middlewares/auth.middleware";
 import rateLimit from "express-rate-limit";
@@ -65,7 +64,6 @@ const limiter = rateLimit({
 });
 app.use(limiter);
 
-app.use('/admin/queues', protect, authorize("admin"), bullBoardAdapter.getRouter());
 app.use("/api", apiHandler);
 
 async function startServer() {

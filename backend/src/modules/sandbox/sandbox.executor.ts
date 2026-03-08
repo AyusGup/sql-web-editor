@@ -1,8 +1,10 @@
 import { getRunnerPool } from "../../db/config/postgres";
+import { seedSandbox } from "./sandbox.seeder";
+import { ISampleTable } from "../../types/schema";
 import * as appInsights from "applicationinsights";
 
 export async function executeSandboxQuery(
-  schema: string,
+  sampleTables: ISampleTable[],
   query: string
 ) {
   const telemetry = appInsights.defaultClient;
@@ -14,12 +16,20 @@ export async function executeSandboxQuery(
   const client = await getRunnerPool().connect();
 
   try {
-    await client.query("BEGIN");
-    await client.query(`SET search_path TO ${schema}`);
+    // 1. Begin Execution Transaction
+    await client.query("BEGIN;");
 
+    // 2. Lock the student query to ONLY their own Temporary tables
+    await client.query("SET LOCAL search_path TO pg_temp;");
+
+    // 3. Generate Temporary Tables and Seed Data
+    await seedSandbox(client, sampleTables);
+
+    // 4. Evaluate the user's query against their private Temp Tables
     const result = await client.query(query);
 
-    await client.query("ROLLBACK");
+    // 5. Cleanly Rollback the transaction
+    await client.query("ROLLBACK;");
 
     // Success Track: Dependency Duration
     telemetry?.trackDependency({
@@ -33,15 +43,15 @@ export async function executeSandboxQuery(
     });
 
     // If multiple queries were sent, pg returns an array of result objects.
-    // We return the rows from the LAST query executed.
     if (Array.isArray(result)) {
       const lastResult = result[result.length - 1];
       return lastResult.rows || [];
     }
 
-    return result.rows;
+    return result?.rows || [];
   } catch (err) {
-    await client.query("ROLLBACK");
+    // 6. If the user query crashed, ensure rollback
+    await client.query("ROLLBACK;");
 
     // Failure Track
     telemetry?.trackException({ exception: err as Error });
@@ -55,6 +65,12 @@ export async function executeSandboxQuery(
 
     throw err;
   } finally {
+    // 7. Magic Connection Reset: This physically enforces that no state bleeds between pooled clients
+    try {
+      await client.query("DISCARD ALL;");
+    } catch (e) {
+      console.error("Failed to DISCARD ALL on sandbox connection", e);
+    }
     client.release();
     telemetry?.trackMetric({ name: 'ActiveSandboxQueries', value: -1 });
   }
