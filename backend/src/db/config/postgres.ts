@@ -28,9 +28,9 @@ export function initPostgres() {
     database: POSTGRES_DB_NAME,
     port: Number(POSTGRES_PORT),
     ssl: false,
-    max: 5,
-    min: 1,
-    idleTimeoutMillis: 30000,
+    max: 17,
+    min: 2,
+    idleTimeoutMillis: 15000,
     connectionTimeoutMillis: 10000,
     allowExitOnIdle: true,
   });
