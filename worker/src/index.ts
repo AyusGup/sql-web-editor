@@ -1,9 +1,10 @@
 import { bullmqRedis } from "./config/redis";
-import { pool } from "./config/postgres";
 import { Worker } from "bullmq";
 import logger from "./config/logger";
 import { startLogCleanupCron } from "./log-cleanup";
 import * as appInsights from "applicationinsights";
+import { loadVaultSecrets } from "./config/vault";
+import { initPostgres, getPool } from "./config/postgres";
 
 if (process.env.APPLICATIONINSIGHTS_CONNECTION_STRING) {
   appInsights.setup(process.env.APPLICATIONINSIGHTS_CONNECTION_STRING)
@@ -16,10 +17,9 @@ if (process.env.APPLICATIONINSIGHTS_CONNECTION_STRING) {
     .start();
 }
 
-import { loadVaultSecrets } from "./config/vault";
-
 async function startWorker() {
   await loadVaultSecrets();
+  initPostgres();
 
   const worker = new Worker(
     "sandbox-cleanup",
@@ -35,7 +35,7 @@ async function startWorker() {
       logger.info("Dropping schema: %s", schema);
 
       try {
-        await pool.query(`DROP SCHEMA IF EXISTS ${schema} CASCADE`);
+        await getPool().query(`DROP SCHEMA IF EXISTS ${schema} CASCADE`);
 
         telemetry?.trackDependency({
           target: 'PostgreSQL-Worker',

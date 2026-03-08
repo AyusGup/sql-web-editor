@@ -1,41 +1,32 @@
-import dotenv from "dotenv";
 import User from "../db/models/User";
-import { connectMongo } from "../db/config/mongo";
+import logger from "../shared/logger";
 
-dotenv.config();
-
-async function initSuperAdmin() {
+export async function initSuperAdmin() {
     try {
-        await connectMongo();
-
         const username = process.env.SUPERADMIN_USERNAME;
         const password = process.env.SUPERADMIN_PASSWORD;
 
         if (!username || !password) {
-            console.error("SUPERADMIN_USERNAME and SUPERADMIN_PASSWORD must be set in environment variables.");
-            process.exit(1);
+            logger.warn("SUPERADMIN_USERNAME and SUPERADMIN_PASSWORD are not set. Skipping superadmin initialization.");
+            return;
         }
 
         const existingSuperAdmin = await User.findOne({ role: "superadmin" });
         if (existingSuperAdmin) {
-            console.log("Superadmin already exists. Skipping initialization.");
-            process.exit(0);
+            logger.info("Superadmin already exists. Skipping initialization.");
+            return;
         }
 
-        // The pre-save hook in User model handles bcrypt hashing
         const superAdmin = new User({
             username,
-            passwordHash: password, // Note: the pre-save hook expects this field name but it hashes it
+            passwordHash: password, // The pre-save hook handles hashing
             role: "superadmin",
         });
 
         await superAdmin.save();
-        console.log(`Superadmin user '${username}' created successfully.`);
-        process.exit(0);
+        logger.info(`Superadmin user '${username}' created successfully.`);
     } catch (error) {
-        console.error("Error initializing superadmin:", error);
-        process.exit(1);
+        logger.error("Error initializing superadmin: " + error);
+        // We log the error but do not crash the app startup.
     }
 }
-
-initSuperAdmin();

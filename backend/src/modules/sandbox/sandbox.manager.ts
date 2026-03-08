@@ -1,5 +1,5 @@
 import { getRedis } from "../../db/config/redis";
-import { adminPool } from "../../db/config/postgres";
+import { getAdminPool } from "../../db/config/postgres";
 import { seedSandbox } from "./sandbox.seeder";
 import { executeSandboxQuery } from "./sandbox.executor";
 import { TTL } from "../../shared/constants";
@@ -38,7 +38,7 @@ export async function executeInSandbox(
   }
 
   // Cache MISS → DB Lookup for Schema 
-  const client = await adminPool.connect();
+  const client = await getAdminPool().connect();
 
   try {
     const exists = await client.query(
@@ -85,7 +85,7 @@ async function createSchema(
     await new Promise((r) => setTimeout(r, delay));
 
     // Check if schema was created by now
-    const client = await adminPool.connect();
+    const client = await getAdminPool().connect();
     try {
       const exists = await client.query(
         `SELECT 1 FROM information_schema.schemata WHERE schema_name = $1`,
@@ -100,7 +100,7 @@ async function createSchema(
     throw new Error("Resource Busy: Schema creation in progress, please retry");
   }
 
-  const client = await adminPool.connect();
+  const client = await getAdminPool().connect();
 
   try {
     await client.query(`CREATE SCHEMA ${schema}`);
@@ -229,7 +229,7 @@ export async function resetSandbox(userId: string, testcaseId: string) {
   const redis = getRedis();
   const schema = getSchema(userId, testcaseId);
 
-  const client = await adminPool.connect();
+  const client = await getAdminPool().connect();
 
   try {
     await client.query(`DROP SCHEMA IF EXISTS ${schema} CASCADE`);

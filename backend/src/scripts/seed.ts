@@ -7,6 +7,7 @@ import Testcase from "../db/models/Testcase";
 import AssignmentTestcase from "../db/models/AssignmentTestcase";
 import assignments from "./data/assignment.json";
 
+
 async function runSeed() {
   try {
     await connectMongo();

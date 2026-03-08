@@ -3,15 +3,24 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 import { getTestcasesForAssignment } from "../assignment/assignment.service";
 import { ISampleTable } from "../../types/schema";
 
-if (!process.env.GEMINI_API_KEY || !process.env.GEMINI_MODEL) {
-  throw Error("GEMINI Credentials Missing");
+
+let genAI: GoogleGenerativeAI;
+let geminiModel: any;
+
+function getGeminiModel() {
+  if (geminiModel) return geminiModel;
+
+  if (!process.env.GEMINI_API_KEY || !process.env.GEMINI_MODEL) {
+    throw Error("GEMINI Credentials Missing");
+  }
+
+  genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
+  geminiModel = genAI.getGenerativeModel({
+    model: process.env.GEMINI_MODEL,
+  });
+
+  return geminiModel;
 }
-
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
-
-const geminiModel = genAI.getGenerativeModel({
-  model: process.env.GEMINI_MODEL,
-});
 
 export async function getSQLHint(
   problemId: string,
@@ -67,7 +76,7 @@ export async function getSQLHint(
     Provide only a helpful logical hint.
     `;
 
-  const result = await geminiModel.generateContent(prompt);
+  const result = await getGeminiModel().generateContent(prompt);
   let hint = result.response.text();
 
   return hint;

@@ -1,4 +1,4 @@
-import { runnerPool } from "../../db/config/postgres";
+import { getRunnerPool } from "../../db/config/postgres";
 import * as appInsights from "applicationinsights";
 
 export async function executeSandboxQuery(
@@ -11,7 +11,7 @@ export async function executeSandboxQuery(
   // Track start of a sandbox query
   telemetry?.trackMetric({ name: 'ActiveSandboxQueries', value: 1 });
 
-  const client = await runnerPool.connect();
+  const client = await getRunnerPool().connect();
 
   try {
     await client.query("BEGIN");

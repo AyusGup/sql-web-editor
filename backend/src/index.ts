@@ -26,6 +26,10 @@ import logger from './shared/logger';
 import bullBoardAdapter from './shared/bull-board';
 import helmet from "helmet";
 import { protect, authorize } from "./middlewares/auth.middleware";
+import rateLimit from "express-rate-limit";
+import { loadVaultSecrets } from "./config/vault";
+import { initSuperAdmin } from "./scripts/init-superadmin";
+import { initPostgres } from "./db/config/postgres";
 
 const app = express();
 const PORT: number = Number(process.env.PORT) || 3000;
@@ -48,21 +52,38 @@ app.use(helmet());
 app.use(express.json());
 app.use(cookieParser());
 
+// Apply rate limiting to all requests
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // limit each IP to 100 requests per 15 minutes
+  message: {
+    success: false,
+    message: "Too many requests from this IP, please try again after 15 minutes"
+  },
+  standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+  legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+});
+app.use(limiter);
+
 app.use('/admin/queues', protect, authorize("admin"), bullBoardAdapter.getRouter());
 app.use("/api", apiHandler);
-
-import { loadVaultSecrets } from "./config/vault";
 
 async function startServer() {
   try {
     // Load Azure Key Vault secrets first (if in production/staging)
     await loadVaultSecrets();
 
+    // Initialize Postgres pools now that secrets are loaded
+    initPostgres();
+
     // Connect MongoDB once at startup
     await connectMongo();
 
     // Connect Redis once at startup
     await connectRedis();
+
+    // Auto-seed superadmin if needed
+    await initSuperAdmin();
 
     app.listen(PORT, () => {
       logger.info(`Server started on port ${PORT}`);
