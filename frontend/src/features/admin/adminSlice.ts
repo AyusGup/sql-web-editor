@@ -30,7 +30,7 @@ const initialState: AdminState = {
     testcases: [],
     testcasesPage: 1,
     testcasesTotalPages: 1,
-    loading: false,
+    loading: true, // Start as true to prevent initial "No data" flicker
     error: null,
 }
 
@@ -150,25 +150,33 @@ const adminSlice = createSlice({
                 state.loading = false
                 state.error = payload as string
             })
+            // Assignments
+            .addCase(fetchAssignmentsAdmin.pending, (state) => {
+                state.loading = true
+            })
             .addCase(fetchAssignmentsAdmin.fulfilled, (state, { payload }) => {
+                state.loading = false
                 state.assignments = payload.data
                 state.assignmentsPage = payload.page
                 state.assignmentsTotalPages = payload.totalPages
             })
-            .addCase(createAssignmentThunk.fulfilled, (state, { payload }) => {
-                state.assignments.unshift(payload)
+            .addCase(fetchAssignmentsAdmin.rejected, (state, { payload }) => {
+                state.loading = false
+                state.error = payload as string
             })
-            .addCase(updateAssignmentThunk.fulfilled, (state, { payload }) => {
-                const idx = state.assignments.findIndex(a => a._id === payload._id)
-                if (idx !== -1) state.assignments[idx] = payload
-            })
-            .addCase(deleteAssignmentThunk.fulfilled, (state, { payload }) => {
-                state.assignments = state.assignments.filter(a => a._id !== payload)
+            // Testcases
+            .addCase(fetchTestcasesAdmin.pending, (state) => {
+                state.loading = true
             })
             .addCase(fetchTestcasesAdmin.fulfilled, (state, { payload }) => {
+                state.loading = false
                 state.testcases = payload.data
                 state.testcasesPage = payload.page
                 state.testcasesTotalPages = payload.totalPages
+            })
+            .addCase(fetchTestcasesAdmin.rejected, (state, { payload }) => {
+                state.loading = false
+                state.error = payload as string
             })
             .addCase(createTestcaseThunk.fulfilled, (state, { payload }) => {
                 state.testcases.unshift({ ...payload, linkedAssignments: [] })

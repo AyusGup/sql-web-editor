@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { adminApi } from '../../services/adminApi'
 import { QUERY } from '../../constants/query'
 import { useToast } from '../../components/common/Toast'
@@ -12,7 +12,7 @@ import Pagination from '../../components/common/Pagination'
 export default function UserManagementPage() {
     const [users, setUsers] = useState<ManagedUser[]>([])
     const [searchQuery, setSearchQuery] = useState('')
-    const [loading, setLoading] = useState(false)
+    const [loading, setLoading] = useState(true)
     const [currentPage, setCurrentPage] = useState(1)
     const [totalPages, setTotalPages] = useState(1)
     const { showToast } = useToast()
@@ -26,24 +26,28 @@ export default function UserManagementPage() {
         type: 'promote' | 'delete' | null;
     }>({ isOpen: false, userId: null, isLoading: false, type: null })
 
-    // Debounce search
+    const prevSearchQuery = useRef(searchQuery)
+
+    // Consolidated effect for search and pagination
     useEffect(() => {
+        const searchChanged = prevSearchQuery.current !== searchQuery
+        prevSearchQuery.current = searchQuery
+
+        const delay = searchChanged ? QUERY.DEBOUNCE_DELAY.SEARCH : 0
+
         const timer = setTimeout(() => {
-            setCurrentPage(1) // Reset to page 1 on new search
-            fetchUsers(1, searchQuery)
-        }, QUERY.DEBOUNCE_DELAY.SEARCH)
+            fetchUsers(currentPage, searchQuery)
+        }, delay)
 
         return () => clearTimeout(timer)
-    }, [searchQuery])
+    }, [searchQuery, currentPage])
 
-    // Handle pagination changes
+    // Reset to page 1 when search changes
     useEffect(() => {
-        if (!searchQuery) {
-            fetchUsers(currentPage, '')
-        } else {
-            fetchUsers(currentPage, searchQuery)
+        if (searchQuery) {
+            setCurrentPage(1)
         }
-    }, [currentPage])
+    }, [searchQuery])
 
     const fetchUsers = async (page: number, q: string) => {
         setLoading(true)
